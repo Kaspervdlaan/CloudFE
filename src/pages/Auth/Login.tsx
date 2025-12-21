@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { authApi } from '../../services/authApi';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { MdEmail, MdLock, MdLogin } from 'react-icons/md';
 import './_Login.scss';
 
 export function Login() {
@@ -63,7 +63,7 @@ export function Login() {
           <div className="auth-field">
             <label htmlFor="email">Email</label>
             <div className="auth-input-wrapper">
-              <Mail size={20} className="auth-input-icon" />
+              <MdEmail size={20} className="auth-input-icon" />
               <input
                 id="email"
                 type="email"
@@ -79,7 +79,7 @@ export function Login() {
           <div className="auth-field">
             <label htmlFor="password">Password</label>
             <div className="auth-input-wrapper">
-              <Lock size={20} className="auth-input-icon" />
+              <MdLock size={20} className="auth-input-icon" />
               <input
                 id="password"
                 type="password"
@@ -93,7 +93,7 @@ export function Login() {
           </div>
 
           <button type="submit" className="auth-button auth-button--primary" disabled={isLoading}>
-            <LogIn size={20} />
+            <MdLogin size={20} />
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>

@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect, type MouseEvent } from 'react';
 import {
-  File as FileIcon,
-  Image,
-  Video,
-  Music,
-  FileText,
-  Archive,
-  MoreVertical,
-  Download,
-  Trash2,
-  Edit,
-  Share2,
-} from 'lucide-react';
+  MdInsertDriveFile,
+  MdImage,
+  MdVideoLibrary,
+  MdMusicNote,
+  MdDescription,
+  MdArchive,
+  MdMoreVert,
+  MdDownload,
+  MdDelete,
+  MdEdit,
+  MdShare,
+} from 'react-icons/md';
 import { IoFolder, IoFolderOpen } from 'react-icons/io5';
 import type { File } from '../../../types/file';
 import { getFileIconName, isImageFile, formatFileSize } from '../../../utils/fileUtils';
@@ -39,12 +39,12 @@ interface FileItemProps {
 
 const iconMap: Record<string, any> = {
   folder: IoFolder,
-  image: Image,
-  video: Video,
-  music: Music,
-  'file-text': FileText,
-  archive: Archive,
-  file: FileIcon,
+  image: MdImage,
+  video: MdVideoLibrary,
+  music: MdMusicNote,
+  'file-text': MdDescription,
+  archive: MdArchive,
+  file: MdInsertDriveFile,
 };
 
 export function FileItem({
@@ -326,7 +326,7 @@ export function FileItem({
   };
 
   const iconName = getFileIconName(file);
-  let Icon = iconMap[iconName] || FileIcon;
+  let Icon = iconMap[iconName] || MdInsertDriveFile;
   
   // Use IoFolderOpen for the current folder, IoFolder for others
   if (file.type === 'folder') {
@@ -399,21 +399,21 @@ export function FileItem({
             </div>
           </div>
         <button className="file-item__menu" onClick={handleContextMenu}>
-          <MoreVertical size={18} />
+          <MdMoreVert size={18} />
         </button>
       </div>
       {contextMenu && (
         <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={handleCloseContextMenu}>
           <ContextMenuItem onClick={handleRenameFromContextMenu}>
             <span className="context-menu__item-content">
-              <Edit size={16} />
+              <MdEdit size={16} />
               <span>Rename</span>
             </span>
           </ContextMenuItem>
           {onShare && file.type === 'folder' && (
             <ContextMenuItem onClick={() => { onShare(); handleCloseContextMenu(); }}>
               <span className="context-menu__item-content">
-                <Share2 size={16} />
+                <MdShare size={16} />
                 <span>Share Folder</span>
               </span>
             </ContextMenuItem>
@@ -421,7 +421,7 @@ export function FileItem({
           {onDownload && file.type === 'file' && (
             <ContextMenuItem onClick={() => { onDownload(); handleCloseContextMenu(); }}>
               <span className="context-menu__item-content">
-                <Download size={16} />
+                <MdDownload size={16} />
                 <span>Download</span>
               </span>
             </ContextMenuItem>
@@ -429,7 +429,7 @@ export function FileItem({
           {onDelete && (
             <ContextMenuItem onClick={() => { onDelete(); handleCloseContextMenu(); }} danger>
               <span className="context-menu__item-content">
-                <Trash2 size={16} />
+                <MdDelete size={16} />
                 <span>Delete</span>
               </span>
             </ContextMenuItem>

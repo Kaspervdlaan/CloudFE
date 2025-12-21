@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { MdChevronRight, MdExpandMore } from 'react-icons/md';
 import { IoFolder, IoFolderOpen } from 'react-icons/io5';
 import { useFilesStore } from '../../../store/useFilesStore';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -227,9 +227,9 @@ export function FolderTree({
               aria-label={isExpanded ? 'Collapse' : 'Expand'}
             >
               {isExpanded ? (
-                <ChevronDown size={14} />
+                <MdExpandMore size={14} />
               ) : (
-                <ChevronRight size={14} />
+                <MdChevronRight size={14} />
               )}
             </button>
           ) : (

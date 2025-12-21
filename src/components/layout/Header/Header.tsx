@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, type ChangeEvent } from 'react';
-import { Search, Grid, List, Cloud, Palette, ChevronDown, LogOut, User, Menu, X } from 'lucide-react';
+import { MdSearch, MdGridOn, MdList, MdCloud, MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose } from 'react-icons/md';
 import { useTheme, type Theme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useFilesStore } from '../../../store/useFilesStore';
@@ -76,15 +76,15 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
           title={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
           aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
         >
-          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          {isSidebarOpen ? <MdClose size={20} /> : <MdMenu size={20} />}
         </button>
       )}
       <div className="header__brand" onClick={() => navigate('/drive')}>
-        <Cloud size={24} />
+        <MdCloud size={24} />
         <span>LivingCloud</span>
       </div>
       <div className="header__search">
-        <Search size={20} className="header__search-icon" />
+        <MdSearch size={20} className="header__search-icon" />
         <input
           type="text"
           className="header__search-input"
@@ -100,14 +100,14 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
             onClick={() => onViewModeChange('grid')}
             title="Grid view"
           >
-            <Grid size={18} />
+            <MdGridOn size={18} />
           </button>
           <button
             className={`header__view-button ${viewMode === 'list' ? 'header__view-button--active' : ''}`}
             onClick={() => onViewModeChange('list')}
             title="List view"
           >
-            <List size={18} />
+            <MdList size={18} />
           </button>
         </div>
         <div className="header__theme-picker" ref={themeDropdownRef}>
@@ -116,9 +116,9 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
             onClick={() => setIsThemeDropdownOpen(!isThemeDropdownOpen)}
             title="Select theme"
           >
-            <Palette size={18} />
+            <MdPalette size={18} />
             <span className="header__theme-name">{themeNames[theme]}</span>
-            <ChevronDown size={16} className={`header__theme-chevron ${isThemeDropdownOpen ? 'header__theme-chevron--open' : ''}`} />
+            <MdExpandMore size={16} className={`header__theme-chevron ${isThemeDropdownOpen ? 'header__theme-chevron--open' : ''}`} />
           </button>
           {isThemeDropdownOpen && (
             <div className="header__theme-dropdown">
@@ -137,7 +137,7 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
         </div>
         {user && (
           <div className="header__user">
-            <User size={18} />
+            <MdPerson size={18} />
             <span className="header__user-name">{user.name}</span>
           </div>
         )}
@@ -146,7 +146,7 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
           onClick={handleLogout}
           title="Logout"
         >
-          <LogOut size={18} />
+          <MdLogout size={18} />
         </button>
       </div>
     </header>

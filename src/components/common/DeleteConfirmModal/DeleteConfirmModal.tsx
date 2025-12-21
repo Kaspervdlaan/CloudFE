@@ -1,5 +1,5 @@
 import { type FormEvent } from 'react';
-import { X, Trash2 } from 'lucide-react';
+import { MdClose, MdDelete } from 'react-icons/md';
 import { Button } from '../Button/Button';
 import './_DeleteConfirmModal.scss';
 
@@ -36,7 +36,7 @@ export function DeleteConfirmModal({
       <div className="delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
         <div className="delete-confirm-modal__header">
           <div className="delete-confirm-modal__icon">
-            <Trash2 size={24} />
+            <MdDelete size={24} />
           </div>
           <h2 className="delete-confirm-modal__title">
             Delete {fileType === 'folder' ? 'Folder' : fileType === 'user' ? 'User' : 'File'}?
@@ -46,7 +46,7 @@ export function DeleteConfirmModal({
             onClick={onClose}
             aria-label="Close"
           >
-            <X size={20} />
+            <MdClose size={20} />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="delete-confirm-modal__body">
@@ -70,7 +70,7 @@ export function DeleteConfirmModal({
               type="submit"
               className="delete-confirm-modal__delete-button"
             >
-              <Trash2 size={16} />
+              <MdDelete size={16} />
               <span >Delete</span>
             </Button>
           </div>

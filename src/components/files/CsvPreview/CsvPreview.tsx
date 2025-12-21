@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MdClose, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import type { File } from '../../../types/file';
 import { isCsvFile } from '../../../utils/fileUtils';
 import { api } from '../../../utils/api';
@@ -209,7 +209,7 @@ export function CsvPreview({ isOpen, file, files, onClose }: CsvPreviewProps) {
     <div className="csv-preview" onClick={onClose}>
       <div className="csv-preview__container" onClick={(e) => e.stopPropagation()}>
         <button className="csv-preview__close" onClick={onClose} aria-label="Close">
-          <X size={24} />
+          <MdClose size={24} />
         </button>
 
         <div className="csv-preview__content-container">
@@ -256,7 +256,7 @@ export function CsvPreview({ isOpen, file, files, onClose }: CsvPreviewProps) {
               disabled={currentIndex === 0}
               aria-label="Previous"
             >
-              <ChevronLeft size={24} />
+              <MdChevronLeft size={24} />
             </button>
             <span className="csv-preview__counter">
               {currentIndex + 1} / {csvFiles.length}
@@ -267,7 +267,7 @@ export function CsvPreview({ isOpen, file, files, onClose }: CsvPreviewProps) {
               disabled={currentIndex === csvFiles.length - 1}
               aria-label="Next"
             >
-              <ChevronRight size={24} />
+              <MdChevronRight size={24} />
             </button>
           </div>
         </div>

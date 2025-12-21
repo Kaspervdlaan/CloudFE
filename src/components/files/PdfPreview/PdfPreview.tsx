@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MdClose, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import type { File } from '../../../types/file';
 import { isPdfFile } from '../../../utils/fileUtils';
 import { api } from '../../../utils/api';
@@ -148,7 +148,7 @@ export function PdfPreview({ isOpen, file, files, onClose }: PdfPreviewProps) {
     <div className="pdf-preview" onClick={onClose}>
       <div className="pdf-preview__container" onClick={(e) => e.stopPropagation()}>
         <button className="pdf-preview__close" onClick={onClose} aria-label="Close">
-          <X size={24} />
+          <MdClose size={24} />
         </button>
 
         <div className="pdf-preview__content-container">
@@ -175,7 +175,7 @@ export function PdfPreview({ isOpen, file, files, onClose }: PdfPreviewProps) {
               disabled={currentIndex === 0}
               aria-label="Previous"
             >
-              <ChevronLeft size={24} />
+              <MdChevronLeft size={24} />
             </button>
             <span className="pdf-preview__counter">
               {currentIndex + 1} / {pdfFiles.length}
@@ -186,7 +186,7 @@ export function PdfPreview({ isOpen, file, files, onClose }: PdfPreviewProps) {
               disabled={currentIndex === pdfFiles.length - 1}
               aria-label="Next"
             >
-              <ChevronRight size={24} />
+              <MdChevronRight size={24} />
             </button>
           </div>
         </div>

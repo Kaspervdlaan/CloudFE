@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight, Maximize, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { MdClose, MdChevronLeft, MdChevronRight, MdFullscreen, MdPlayArrow, MdPause, MdVolumeUp, MdVolumeOff } from 'react-icons/md';
 import type { File } from '../../../types/file';
 import { isVideoFile } from '../../../utils/fileUtils';
 import { api } from '../../../utils/api';
@@ -215,7 +215,7 @@ export function VideoPreview({ isOpen, file, files, onClose }: VideoPreviewProps
     <div className="video-preview" onClick={onClose}>
       <div className="video-preview__container" onClick={(e) => e.stopPropagation()}>
         <button className="video-preview__close" onClick={onClose} aria-label="Close">
-          <X size={24} />
+          <MdClose size={24} />
         </button>
 
         <div className="video-preview__video-container">
@@ -238,7 +238,7 @@ export function VideoPreview({ isOpen, file, files, onClose }: VideoPreviewProps
               disabled={currentIndex === 0}
               aria-label="Previous"
             >
-              <ChevronLeft size={24} />
+              <MdChevronLeft size={24} />
             </button>
             <span className="video-preview__counter">
               {currentIndex + 1} / {videoFiles.length}
@@ -249,16 +249,16 @@ export function VideoPreview({ isOpen, file, files, onClose }: VideoPreviewProps
               disabled={currentIndex === videoFiles.length - 1}
               aria-label="Next"
             >
-              <ChevronRight size={24} />
+              <MdChevronRight size={24} />
             </button>
           </div>
 
           <div className="video-preview__playback">
             <button className="video-preview__button" onClick={handlePlayPause} aria-label={isPlaying ? 'Pause' : 'Play'}>
-              {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+              {isPlaying ? <MdPause size={20} /> : <MdPlayArrow size={20} />}
             </button>
             <button className="video-preview__button" onClick={toggleMute} aria-label={isMuted ? 'Unmute' : 'Mute'}>
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              {isMuted ? <MdVolumeOff size={20} /> : <MdVolumeUp size={20} />}
             </button>
             <input
               type="range"
@@ -271,7 +271,7 @@ export function VideoPreview({ isOpen, file, files, onClose }: VideoPreviewProps
               aria-label="Volume"
             />
             <button className="video-preview__button" onClick={handleFullscreen} aria-label="Fullscreen">
-              <Maximize size={20} />
+              <MdFullscreen size={20} />
             </button>
           </div>
         </div>

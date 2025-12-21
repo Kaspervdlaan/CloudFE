@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MdClose, MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import type { File } from '../../../types/file';
 import { isTextFile, isCodeFile } from '../../../utils/fileUtils';
 import { api } from '../../../utils/api';
@@ -159,7 +159,7 @@ export function TextPreview({ isOpen, file, files, onClose }: TextPreviewProps) 
     <div className="text-preview" onClick={onClose}>
       <div className="text-preview__container" onClick={(e) => e.stopPropagation()}>
         <button className="text-preview__close" onClick={onClose} aria-label="Close">
-          <X size={24} />
+          <MdClose size={24} />
         </button>
 
         <div className="text-preview__content-container">
@@ -184,7 +184,7 @@ export function TextPreview({ isOpen, file, files, onClose }: TextPreviewProps) 
               disabled={currentIndex === 0}
               aria-label="Previous"
             >
-              <ChevronLeft size={24} />
+              <MdChevronLeft size={24} />
             </button>
             <span className="text-preview__counter">
               {currentIndex + 1} / {textFiles.length}
@@ -195,7 +195,7 @@ export function TextPreview({ isOpen, file, files, onClose }: TextPreviewProps) 
               disabled={currentIndex === textFiles.length - 1}
               aria-label="Next"
             >
-              <ChevronRight size={24} />
+              <MdChevronRight size={24} />
             </button>
           </div>
         </div>

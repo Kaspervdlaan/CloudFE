@@ -18,8 +18,7 @@ import { ContextMenu, ContextMenuItem } from '../../components/common/ContextMen
 import { DeleteConfirmModal } from '../../components/common/DeleteConfirmModal/DeleteConfirmModal';
 import { ShareModal } from '../../components/common/ShareModal/ShareModal';
 import { Button } from '../../components/common/Button/Button';
-import { FolderPlus, Upload, ArrowLeft, Cloud, Pencil, Trash2, Share2 } from 'lucide-react';
-import { HiOutlineCog6Tooth } from "react-icons/hi2";
+import { MdCreateNewFolder, MdUpload, MdArrowBack, MdCloud, MdEdit, MdDelete, MdShare, MdSettings } from 'react-icons/md';
 import type { File } from '../../types/file';
 import type { User } from '../../types/auth';
 import { isImageFile, isVideoFile, isAudioFile, isTextFile, isPdfFile, isOfficeFile, isMarkdownFile, isCsvFile, isCodeFile } from '../../utils/fileUtils';
@@ -434,7 +433,7 @@ export function Drive() {
                 title="Go to My Drive"
                 aria-label="Go to My Drive"
               >
-                <Cloud size={24} />
+                <MdCloud size={24} />
               </button>
             ) : currentFolderId !== undefined || viewingUserId ? (
               <button
@@ -443,7 +442,7 @@ export function Drive() {
                 title={viewingUserId ? "Go back to user list" : "Go up one folder"}
                 aria-label={viewingUserId ? "Go back to user list" : "Go up one folder"}
               >
-                <ArrowLeft size={24} />
+                <MdArrowBack size={24} />
               </button>
             ) : (
               <button
@@ -452,7 +451,7 @@ export function Drive() {
                 title={user?.name ? `Go to ${user.name}'s Drive` : 'Go to My Drive'}
                 aria-label={user?.name ? `Go to ${user.name}'s Drive` : 'Go to My Drive'}
               >
-                <Cloud size={24} />
+                <MdCloud size={24} />
               </button>
             )}
             {fileToRename === currentFolderId && currentFolder ? (
@@ -501,7 +500,7 @@ export function Drive() {
                   title={`Folder options for "${currentFolder.name}"`}
                   aria-label={`Folder options for "${currentFolder.name}"`}
                 >
-                  <HiOutlineCog6Tooth size={20} />
+                  <MdSettings size={20} />
                 </Button>
               )}
           </div>
@@ -512,7 +511,7 @@ export function Drive() {
                 onClick={handleUploadClick}
                 className="drive__upload"
               >
-                <Upload size={20} />
+                <MdUpload size={20} />
                 <span>Upload</span>
               </Button>
               <Button
@@ -520,7 +519,7 @@ export function Drive() {
                 onClick={handleCreateFolderFromContext}
                 className="drive__create-folder"
               >
-                <FolderPlus size={20} />
+                <MdCreateNewFolder size={20} />
                 <span>New Folder</span>
               </Button>
             </div>
@@ -550,6 +549,7 @@ export function Drive() {
                 onUserClick={handleUserClick}
                 onUserDelete={handleUserDelete}
                 currentUserId={user?.id}
+                viewMode={viewMode}
               />
             )}
           </>
@@ -715,7 +715,7 @@ export function Drive() {
           onClose={() => setContextMenu(null)}
         >
           <ContextMenuItem onClick={handleCreateFolderFromContext}>
-            <FolderPlus size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
+            <MdCreateNewFolder size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
             New Folder
           </ContextMenuItem>
         </ContextMenu>
@@ -727,15 +727,15 @@ export function Drive() {
           onClose={() => setFolderContextMenu(null)}
         >
           <ContextMenuItem onClick={handleRenameFolder}>
-            <Pencil size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
+            <MdEdit size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
             <span>Rename Folder</span>
           </ContextMenuItem>
           <ContextMenuItem onClick={handleShareFolder}>
-            <Share2 size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
+            <MdShare size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
             <span>Share Folder</span>
           </ContextMenuItem>
           <ContextMenuItem onClick={handleDeleteCurrentFolder} danger>
-            <Trash2 size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
+            <MdDelete size={16} style={{ marginRight: '8px', display: 'inline-block' }} />
             <span>Delete Folder</span>
           </ContextMenuItem>
         </ContextMenu>

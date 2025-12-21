@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react';
-import { X, Share2, UserPlus, Trash2 } from 'lucide-react';
+import { MdClose, MdShare, MdPersonAdd, MdDelete } from 'react-icons/md';
 import { Button } from '../Button/Button';
 import { api } from '../../../utils/api';
 import { authApi } from '../../../services/authApi';
@@ -125,7 +125,7 @@ export function ShareModal({
       <div className="share-modal" onClick={(e) => e.stopPropagation()}>
         <div className="share-modal__header">
           <div className="share-modal__icon">
-            <Share2 size={24} />
+            <MdShare size={24} />
           </div>
           <h2 className="share-modal__title">Share Folder</h2>
           <button
@@ -133,7 +133,7 @@ export function ShareModal({
             onClick={onClose}
             aria-label="Close"
           >
-            <X size={20} />
+            <MdClose size={20} />
           </button>
         </div>
 
@@ -191,7 +191,7 @@ export function ShareModal({
               disabled={!selectedUserId || loading || availableUsers.length === 0}
               className="share-modal__share-button"
             >
-              <UserPlus size={16} />
+              <MdPersonAdd size={16} />
               <span>Share</span>
             </Button>
           </form>
@@ -229,7 +229,7 @@ export function ShareModal({
                         disabled={loading}
                         aria-label="Remove access"
                       >
-                        <Trash2 size={16} />
+                        <MdDelete size={16} />
                       </button>
                     </div>
                   </li>

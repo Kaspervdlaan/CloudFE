@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { authApi } from '../../services/authApi';
-import { Mail, Lock, User, UserPlus } from 'lucide-react';
+import { MdEmail, MdLock, MdPerson, MdPersonAdd } from 'react-icons/md';
 import './_Register.scss';
 
 export function Register() {
@@ -67,7 +67,7 @@ export function Register() {
           <div className="auth-field">
             <label htmlFor="name">Name</label>
             <div className="auth-input-wrapper">
-              <User size={20} className="auth-input-icon" />
+              <MdPerson size={20} className="auth-input-icon" />
               <input
                 id="name"
                 type="text"
@@ -83,7 +83,7 @@ export function Register() {
           <div className="auth-field">
             <label htmlFor="email">Email</label>
             <div className="auth-input-wrapper">
-              <Mail size={20} className="auth-input-icon" />
+              <MdEmail size={20} className="auth-input-icon" />
               <input
                 id="email"
                 type="email"
@@ -99,7 +99,7 @@ export function Register() {
           <div className="auth-field">
             <label htmlFor="password">Password</label>
             <div className="auth-input-wrapper">
-              <Lock size={20} className="auth-input-icon" />
+              <MdLock size={20} className="auth-input-icon" />
               <input
                 id="password"
                 type="password"
@@ -116,7 +116,7 @@ export function Register() {
           <div className="auth-field">
             <label htmlFor="confirmPassword">Confirm Password</label>
             <div className="auth-input-wrapper">
-              <Lock size={20} className="auth-input-icon" />
+              <MdLock size={20} className="auth-input-icon" />
               <input
                 id="confirmPassword"
                 type="password"
@@ -131,7 +131,7 @@ export function Register() {
           </div>
 
           <button type="submit" className="auth-button auth-button--primary" disabled={isLoading}>
-            <UserPlus size={20} />
+            <MdPersonAdd size={20} />
             {isLoading ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>

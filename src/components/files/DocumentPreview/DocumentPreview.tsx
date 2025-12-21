@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { MdClose, MdChevronLeft, MdChevronRight, MdDownload } from 'react-icons/md';
 import type { File } from '../../../types/file';
 import { isOfficeFile } from '../../../utils/fileUtils';
 import { api } from '../../../utils/api';
@@ -170,7 +170,7 @@ export function DocumentPreview({ isOpen, file, files, onClose }: DocumentPrevie
     <div className="document-preview" onClick={onClose}>
       <div className="document-preview__container" onClick={(e) => e.stopPropagation()}>
         <button className="document-preview__close" onClick={onClose} aria-label="Close">
-          <X size={24} />
+          <MdClose size={24} />
         </button>
 
         <div className="document-preview__content-container">
@@ -188,7 +188,7 @@ export function DocumentPreview({ isOpen, file, files, onClose }: DocumentPrevie
                   className="document-preview__download-button"
                   onClick={handleDownload}
                 >
-                  <Download size={20} />
+                  <MdDownload size={20} />
                   <span>Download {currentFile.name}</span>
                 </button>
                 <div className="document-preview__info-text">
@@ -210,7 +210,7 @@ export function DocumentPreview({ isOpen, file, files, onClose }: DocumentPrevie
               disabled={currentIndex === 0}
               aria-label="Previous"
             >
-              <ChevronLeft size={24} />
+              <MdChevronLeft size={24} />
             </button>
             <span className="document-preview__counter">
               {currentIndex + 1} / {documentFiles.length}
@@ -221,7 +221,7 @@ export function DocumentPreview({ isOpen, file, files, onClose }: DocumentPrevie
               disabled={currentIndex === documentFiles.length - 1}
               aria-label="Next"
             >
-              <ChevronRight size={24} />
+              <MdChevronRight size={24} />
             </button>
           </div>
         </div>

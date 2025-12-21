@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize } from 'lucide-react';
+import { MdClose, MdChevronLeft, MdChevronRight, MdZoomIn, MdZoomOut, MdFullscreen } from 'react-icons/md';
 import type { File } from '../../../types/file';
 import { isImageFile } from '../../../utils/fileUtils';
 import { api } from '../../../utils/api';
@@ -160,7 +160,7 @@ export function PhotoPreview({ isOpen, file, files, onClose }: PhotoPreviewProps
     <div className="photo-preview" onClick={onClose}>
       <div className="photo-preview__container" onClick={(e) => e.stopPropagation()}>
         <button className="photo-preview__close" onClick={onClose} aria-label="Close">
-          <X size={24} />
+          <MdClose size={24} />
         </button>
 
         <div className="photo-preview__image-container">
@@ -180,7 +180,7 @@ export function PhotoPreview({ isOpen, file, files, onClose }: PhotoPreviewProps
               disabled={currentIndex === 0}
               aria-label="Previous"
             >
-              <ChevronLeft size={24} />
+              <MdChevronLeft size={24} />
             </button>
             <span className="photo-preview__counter">
               {currentIndex + 1} / {imageFiles.length}
@@ -191,20 +191,20 @@ export function PhotoPreview({ isOpen, file, files, onClose }: PhotoPreviewProps
               disabled={currentIndex === imageFiles.length - 1}
               aria-label="Next"
             >
-              <ChevronRight size={24} />
+              <MdChevronRight size={24} />
             </button>
           </div>
 
           <div className="photo-preview__zoom">
             <button className="photo-preview__button" onClick={(e) => handleZoomOut(e)} aria-label="Zoom out">
-              <ZoomOut size={20} />
+              <MdZoomOut size={20} />
             </button>
             <span className="photo-preview__zoom-level">{Math.round(zoom * 100)}%</span>
             <button className="photo-preview__button" onClick={(e) => handleZoomIn(e)} aria-label="Zoom in">
-              <ZoomIn size={20} />
+              <MdZoomIn size={20} />
             </button>
             <button className="photo-preview__button" onClick={(e) => handleFullscreen(e)} aria-label="Fullscreen">
-              <Maximize size={20} />
+              <MdFullscreen size={20} />
             </button>
           </div>
         </div>

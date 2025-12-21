@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { X, ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { MdClose, MdChevronLeft, MdChevronRight, MdPlayArrow, MdPause, MdVolumeUp, MdVolumeOff } from 'react-icons/md';
 import type { File } from '../../../types/file';
 import { isAudioFile } from '../../../utils/fileUtils';
 import { api } from '../../../utils/api';
@@ -243,12 +243,12 @@ export function AudioPreview({ isOpen, file, files, onClose }: AudioPreviewProps
     <div className="audio-preview" onClick={onClose}>
       <div className="audio-preview__container" onClick={(e) => e.stopPropagation()}>
         <button className="audio-preview__close" onClick={onClose} aria-label="Close">
-          <X size={24} />
+          <MdClose size={24} />
         </button>
 
         <div className="audio-preview__content">
           <div className="audio-preview__icon">
-            <Volume2 size={64} />
+            <MdVolumeUp size={64} />
           </div>
           
           <div className="audio-preview__info">
@@ -280,7 +280,7 @@ export function AudioPreview({ isOpen, file, files, onClose }: AudioPreviewProps
               disabled={currentIndex === 0}
               aria-label="Previous"
             >
-              <ChevronLeft size={24} />
+              <MdChevronLeft size={24} />
             </button>
             <span className="audio-preview__counter">
               {currentIndex + 1} / {audioFiles.length}
@@ -291,16 +291,16 @@ export function AudioPreview({ isOpen, file, files, onClose }: AudioPreviewProps
               disabled={currentIndex === audioFiles.length - 1}
               aria-label="Next"
             >
-              <ChevronRight size={24} />
+              <MdChevronRight size={24} />
             </button>
           </div>
 
           <div className="audio-preview__playback">
             <button className="audio-preview__button audio-preview__button--large" onClick={handlePlayPause} aria-label={isPlaying ? 'Pause' : 'Play'}>
-              {isPlaying ? <Pause size={32} /> : <Play size={32} />}
+              {isPlaying ? <MdPause size={32} /> : <MdPlayArrow size={32} />}
             </button>
             <button className="audio-preview__button" onClick={toggleMute} aria-label={isMuted ? 'Unmute' : 'Mute'}>
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              {isMuted ? <MdVolumeOff size={20} /> : <MdVolumeUp size={20} />}
             </button>
             <input
               type="range"
