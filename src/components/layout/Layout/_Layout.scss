@@ -1,0 +1,56 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.layout__body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.layout__overlay {
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn $transition-base $ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.layout__main {
+  flex: 1;
+  overflow: hidden;
+  background-color: $background;
+  transition: margin-left $transition-base $ease-in-out;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: $breakpoint-md) {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+

@@ -1,0 +1,47 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.context-menu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  box-shadow: $shadow-strong;
+  padding: $spacing-xs;
+  z-index: 1000;
+}
+
+.context-menu__item {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  color: $text-primary;
+  border-radius: $radius-sm;
+  transition: background-color $transition-base $ease-in-out;
+  
+  &:hover {
+    background-color: $hover;
+  }
+  
+  &--danger {
+    color: #dc2626;
+    
+    &:hover {
+      background-color: rgba(220, 38, 38, 0.1);
+    }
+  }
+}
+
+.context-menu__item-content {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  
+}
+

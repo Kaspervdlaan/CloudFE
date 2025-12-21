@@ -1,0 +1,307 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.audio-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.audio-preview__container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  padding: $spacing-2xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-lg;
+    padding-bottom: 200px; // Space for controls and toolbar
+  }
+}
+
+.audio-preview__close {
+  position: absolute;
+  top: $spacing-lg;
+  right: $spacing-lg;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background-color $transition-base $ease-in-out;
+  
+  @media (max-width: $breakpoint-md) {
+    top: $spacing-md;
+    right: $spacing-md;
+    width: 44px;
+    height: 44px;
+  }
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.audio-preview__content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-lg;
+  padding: $spacing-2xl;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: $radius-xl;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-lg;
+  }
+}
+
+.audio-preview__icon {
+  color: white;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  margin-bottom: $spacing-md;
+
+  @media (max-width: $breakpoint-md) {
+    width: 100px;
+    height: 100px;
+    
+    svg {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
+
+.audio-preview__info {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.audio-preview__name {
+  color: white;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  @include truncate;
+
+  @media (max-width: $breakpoint-md) {
+    font-size: $font-size-base;
+  }
+}
+
+.audio-preview__time {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: $font-size-sm;
+}
+
+.audio-preview__progress-container {
+  width: 100%;
+  padding: $spacing-md 0;
+}
+
+.audio-preview__progress {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+.audio-preview__controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: $spacing-lg;
+  border-radius: $radius-lg;
+
+  @media (max-width: $breakpoint-md) {
+    position: fixed;
+    bottom: 80px; // Above the fixed toolbar
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+}
+
+.audio-preview__nav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  width: 100%;
+  justify-content: center;
+
+  @media (max-width: $breakpoint-md) {
+    justify-content: space-between;
+    gap: $spacing-lg;
+  }
+}
+
+.audio-preview__button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: $spacing-sm;
+  border-radius: $radius-sm;
+  transition: background-color $transition-base $ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  position: relative;
+  
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-md;
+    min-width: 44px;
+    min-height: 44px;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--large {
+    padding: $spacing-md;
+    width: 64px;
+    height: 64px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+
+    @media (max-width: $breakpoint-md) {
+      width: 56px;
+      height: 56px;
+      
+      svg {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.audio-preview__counter {
+  color: white;
+  font-size: $font-size-sm;
+  min-width: 60px;
+  text-align: center;
+}
+
+.audio-preview__playback {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  width: 100%;
+  justify-content: center;
+
+  @media (max-width: $breakpoint-md) {
+    justify-content: space-between;
+    gap: $spacing-sm;
+  }
+}
+
+.audio-preview__volume-slider {
+  width: 100px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+
+  @media (max-width: $breakpoint-md) {
+    width: 80px;
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+}
+

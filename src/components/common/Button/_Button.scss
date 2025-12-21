@@ -1,0 +1,29 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.btn {
+  @include button-base;
+  
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-sm $spacing-md;
+    font-size: $font-size-sm;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  &--primary {
+    @include button-primary;
+  }
+  
+  &--secondary {
+    @include button-secondary;
+  }
+  
+  &--ghost {
+    @include button-ghost;
+  }
+}
+

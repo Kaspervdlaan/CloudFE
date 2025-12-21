@@ -1,0 +1,250 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.header {
+  @include flex-between;
+  padding: $spacing-md $spacing-lg;
+  background-color: $surface;
+  border-bottom: 1px solid $border;
+  gap: $spacing-lg;
+
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-sm $spacing-md;
+    gap: $spacing-sm;
+  }
+}
+
+.header__menu-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xs;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-primary;
+  border-radius: $radius-sm;
+  transition: background-color $transition-fast $ease-in-out;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+  }
+
+  &:hover {
+    background-color: $hover;
+  }
+
+  &:active {
+    background-color: $primary-300;
+  }
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $text-primary;
+  min-width: 140px;
+  
+  svg {
+    color: $accent-500;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    display: none;
+  }
+}
+
+
+.header__search {
+  flex: 1;
+  max-width: 600px;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: $breakpoint-md) {
+    max-width: none;
+    flex: 1;
+  }
+}
+
+.header__search-icon {
+  position: absolute;
+  left: $spacing-md;
+  color: $text-secondary;
+  pointer-events: none;
+}
+
+.header__search-input {
+  @include input-base;
+  padding-left: 40px;
+  max-width: 100%;
+}
+
+.header__actions {
+  @include flex-center;
+  gap: $spacing-md;
+
+  @media (max-width: $breakpoint-md) {
+    gap: $spacing-sm;
+  }
+}
+
+.header__button {
+  @include button-primary;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.header__view-toggle {
+  display: flex;
+  gap: $spacing-xs;
+  background-color: $primary-100;
+  padding: $spacing-xs;
+  border-radius: $radius-md;
+}
+
+.header__view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xs;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-secondary;
+  border-radius: $radius-sm;
+  transition: all $transition-base $ease-in-out;
+  
+  &:hover {
+    background-color: $surface;
+    color: $text-primary;
+  }
+  
+  &--active {
+    background-color: $surface;
+    color: $accent-600;
+    box-shadow: $shadow-soft;
+  }
+}
+
+.header__theme-picker {
+  position: relative;
+}
+
+.header__theme-button {
+  @include flex-center;
+  gap: $spacing-sm;
+  padding: $spacing-xs;
+  padding-right: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-secondary;
+  border-radius: $radius-sm;
+  transition: all $transition-base $ease-in-out;
+  font-size: $font-size-sm;
+  
+  &:hover {
+    background-color: $surface;
+    color: $text-primary;
+  }
+}
+
+.header__theme-name {
+  font-weight: $font-weight-medium;
+
+  @media (max-width: $breakpoint-md) {
+    display: none; // Hide theme name on mobile, show only icon
+  }
+}
+
+.header__theme-chevron {
+  transition: transform $transition-base $ease-in-out;
+  
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.header__theme-dropdown {
+  position: absolute;
+  top: calc(100% + $spacing-xs);
+  right: 0;
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  box-shadow: $shadow-medium;
+  min-width: 180px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.header__theme-option {
+  @include flex-between;
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-primary;
+  text-align: left;
+  transition: all $transition-base $ease-in-out;
+  font-size: $font-size-sm;
+  
+  &:hover {
+    background-color: $hover;
+  }
+  
+  &--active {
+    background-color: $primary-100;
+    color: $accent-500;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.header__theme-check {
+  color: $accent-500;
+  font-weight: $font-weight-bold;
+}
+
+.header__user {
+  @include flex-center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-sm;
+  color: $text-secondary;
+  font-size: $font-size-sm;
+
+  @media (max-width: $breakpoint-md) {
+    display: none; // Hide user name on mobile to save space
+  }
+}
+.header__user-name {
+  font-weight: $font-weight-medium;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header__logout-button {
+  @include flex-center;
+  padding: $spacing-xs;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-secondary;
+  border-radius: $radius-sm;
+  transition: all $transition-base $ease-in-out;
+  
+  &:hover {
+    background-color: $surface;
+    color: $text-primary;
+  }
+}
+

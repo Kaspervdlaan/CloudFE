@@ -1,0 +1,98 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+// Reset & Base Styles
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: $font-family;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $text-primary;
+  background-color: $background;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $text-primary;
+}
+
+h1 {
+  font-size: $font-size-3xl;
+}
+
+h2 {
+  font-size: $font-size-2xl;
+}
+
+h3 {
+  font-size: $font-size-xl;
+}
+
+h4 {
+  font-size: $font-size-lg;
+}
+
+p {
+  margin: 0;
+  line-height: $line-height-normal;
+}
+
+a {
+  color: $accent-500;
+  text-decoration: none;
+  transition: color $transition-base $ease-in-out;
+  
+  &:hover {
+    color: $accent-600;
+  }
+}
+
+// Scrollbar Styling
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $primary-100;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-400;
+  border-radius: $radius-sm;
+  
+  &:hover {
+    background: $primary-500;
+  }
+}
+
+// Selection
+::selection {
+  background-color: rgba($accent-500, 0.2);
+  color: $text-primary;
+}
+
+// Input styles (available globally)
+.input {
+  @include input-base;
+}
+

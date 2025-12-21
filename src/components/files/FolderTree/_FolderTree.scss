@@ -1,0 +1,80 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.folder-tree {
+  padding: $spacing-sm 0;
+}
+
+.folder-tree__node {
+  display: flex;
+  flex-direction: column;
+}
+
+.folder-tree__item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  transition: background-color $transition-base $ease-in-out;
+  user-select: none;
+  min-height: 28px;
+  
+  &:hover {
+    background-color: $hover;
+  }
+  
+  &--active {
+    background-color: rgba($accent-500, 0.1);
+    color: $accent-600;
+    font-weight: $font-weight-medium;
+  }
+  
+  &--drag-over {
+    background-color: rgba($accent-500, 0.15);
+    border: 2px dashed $accent-500;
+    border-radius: $radius-sm;
+  }
+}
+
+.folder-tree__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-secondary;
+  flex-shrink: 0;
+  transition: color $transition-base $ease-in-out;
+  
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+.folder-tree__spacer {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.folder-tree__icon {
+  flex-shrink: 0;
+  color: $accent-500;
+}
+
+.folder-tree__name {
+  flex: 1;
+  @include truncate;
+}
+
+.folder-tree__children {
+  display: flex;
+  flex-direction: column;
+}

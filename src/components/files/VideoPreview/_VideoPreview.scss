@@ -1,0 +1,234 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.video-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-preview__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-preview__close {
+  position: absolute;
+  top: $spacing-lg;
+  right: $spacing-lg;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background-color $transition-base $ease-in-out;
+  
+  @media (max-width: $breakpoint-md) {
+    top: $spacing-md;
+    right: $spacing-md;
+    width: 44px;
+    height: 44px;
+  }
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.video-preview__video-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: $spacing-2xl;
+
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-md;
+    padding-bottom: 200px; // Space for controls and toolbar
+  }
+}
+
+.video-preview__video {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.video-preview__controls {
+  position: absolute;
+  bottom: $spacing-xl;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: $spacing-xl;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: $spacing-md $spacing-lg;
+  border-radius: $radius-lg;
+
+  @media (max-width: $breakpoint-md) {
+    bottom: 80px; // Above the fixed toolbar
+    left: 0;
+    right: 0;
+    transform: none;
+    flex-direction: column;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+}
+
+.video-preview__nav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+
+  @media (max-width: $breakpoint-md) {
+    width: 100%;
+    justify-content: space-between;
+    gap: $spacing-lg;
+  }
+}
+
+.video-preview__button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: $spacing-sm;
+  border-radius: $radius-sm;
+  transition: background-color $transition-base $ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  position: relative;
+  
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-md;
+    min-width: 44px;
+    min-height: 44px;
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  &:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  &:active:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.video-preview__counter {
+  color: white;
+  font-size: $font-size-sm;
+  min-width: 60px;
+  text-align: center;
+}
+
+.video-preview__playback {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding-left: $spacing-lg;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+
+  @media (max-width: $breakpoint-md) {
+    width: 100%;
+    justify-content: space-between;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: $spacing-md;
+  }
+}
+
+.video-preview__volume-slider {
+  width: 100px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+
+  @media (max-width: $breakpoint-md) {
+    width: 80px;
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+.video-preview__info {
+  position: absolute;
+  bottom: $spacing-lg;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  margin-bottom: 80px;
+
+  @media (max-width: $breakpoint-md) {
+    bottom: 200px; // Above controls
+    left: 0;
+    right: 0;
+    transform: none;
+    margin-bottom: 0;
+    border-radius: 0;
+    text-align: center;
+  }
+}
+
+.video-preview__name {
+  color: white;
+  font-size: $font-size-sm;
+}
+

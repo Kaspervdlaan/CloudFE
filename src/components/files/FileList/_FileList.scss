@@ -1,0 +1,8 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+}
+

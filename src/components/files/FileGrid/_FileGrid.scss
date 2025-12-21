@@ -1,0 +1,21 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); // 4 columns on mobile
+  grid-template-rows: repeat(4, 1fr); // 4 columns on mobile
+  padding: $spacing-md $spacing-sm;
+  align-items: start;
+  gap: $spacing-xs;
+  height: 100%;
+  
+  @include respond-to(md) {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+  
+  @include respond-to(lg) {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+

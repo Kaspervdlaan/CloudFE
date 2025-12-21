@@ -1,0 +1,40 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.drop-zone {
+  position: relative;
+  min-height: 100%;
+  
+  &--dragging {
+    .drop-zone__overlay {
+      display: flex;
+    }
+  }
+}
+
+.drop-zone__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($accent-500, 0.1);
+  border: 2px dashed $accent-500;
+  border-radius: $radius-lg;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.drop-zone__message {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  color: $accent-600;
+  background-color: $surface;
+  padding: $spacing-lg $spacing-xl;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-strong;
+}
+
