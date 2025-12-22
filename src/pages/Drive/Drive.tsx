@@ -17,8 +17,9 @@ import { CsvPreview } from '../../components/files/CsvPreview/CsvPreview';
 import { ContextMenu, ContextMenuItem } from '../../components/common/ContextMenu/ContextMenu';
 import { DeleteConfirmModal } from '../../components/common/DeleteConfirmModal/DeleteConfirmModal';
 import { ShareModal } from '../../components/common/ShareModal/ShareModal';
+import { CreateUserModal } from '../../components/common/CreateUserModal/CreateUserModal';
 import { Button } from '../../components/common/Button/Button';
-import { MdCreateNewFolder, MdUpload, MdArrowBack, MdCloud, MdEdit, MdDelete, MdShare, MdSettings } from 'react-icons/md';
+import { MdCreateNewFolder, MdUpload, MdArrowBack, MdCloud, MdEdit, MdDelete, MdShare, MdSettings, MdPersonAdd } from 'react-icons/md';
 import type { File } from '../../types/file';
 import type { User } from '../../types/auth';
 import { isImageFile, isVideoFile, isAudioFile, isTextFile, isPdfFile, isOfficeFile, isMarkdownFile, isCsvFile, isCodeFile } from '../../utils/fileUtils';
@@ -89,6 +90,7 @@ export function Drive() {
   const [folderContextMenu, setFolderContextMenu] = useState<{ x: number; y: number } | null>(null);
   const [fileToRename, setFileToRename] = useState<string | null>(null);
   const [folderToShare, setFolderToShare] = useState<File | null>(null);
+  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   
@@ -120,6 +122,27 @@ export function Drive() {
         });
     }
   }, [user?.role, viewingUserId, viewingUser, setViewingUserId]);
+
+  const loadAllUsers = async () => {
+    if (user?.role === 'admin') {
+      setUsersLoading(true);
+      try {
+        const users = await authApi.getAllUsers();
+        setAllUsers(users);
+        // If viewingUserId is set, find the user and update store
+        if (viewingUserId) {
+          const foundUser = users.find(u => u.id === viewingUserId);
+          if (foundUser && viewingUser?.id !== viewingUserId) {
+            setViewingUserId(viewingUserId, foundUser);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load users:', err);
+      } finally {
+        setUsersLoading(false);
+      }
+    }
+  };
 
   // Load files on mount and when folder/user changes
   useEffect(() => {
@@ -504,7 +527,18 @@ export function Drive() {
                 </Button>
               )}
           </div>
-          {!isAdminAtRoot && (
+          {isAdminAtRoot ? (
+            <div className="drive__actions">
+              <Button
+                variant="ghost"
+                onClick={() => setIsCreateUserModalOpen(true)}
+                className="drive__create-user"
+              >
+                <MdPersonAdd size={20} />
+                <span>Create User</span>
+              </Button>
+            </div>
+          ) : (
             <div className="drive__actions">
               <Button
                 variant="ghost"
@@ -766,6 +800,13 @@ export function Drive() {
               loadFiles(currentFolderId);
             }
           }}
+        />
+      )}
+      {user?.role === 'admin' && (
+        <CreateUserModal
+          isOpen={isCreateUserModalOpen}
+          onClose={() => setIsCreateUserModalOpen(false)}
+          onUserCreated={loadAllUsers}
         />
       )}
     </Layout>

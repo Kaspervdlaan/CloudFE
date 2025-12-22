@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { authApi } from '../../services/authApi';
+// import { authApi } from '../../services/authApi';
 import { MdEmail, MdLock, MdPerson, MdPersonAdd } from 'react-icons/md';
 import './_Register.scss';
 
@@ -49,9 +49,9 @@ export function Register() {
     }
   };
 
-  const handleGoogleAuth = () => {
-    authApi.initiateGoogleAuth();
-  };
+  // const handleGoogleAuth = () => {
+  //   authApi.initiateGoogleAuth();
+  // };
 
   return (
     <div className="auth-page">
@@ -136,7 +136,7 @@ export function Register() {
           </button>
         </form>
 
-        <div className="auth-divider">
+        {/* <div className="auth-divider">
           <span>OR</span>
         </div>
 
@@ -165,7 +165,7 @@ export function Register() {
             />
           </svg>
           Continue with Google
-        </button>
+        </button> */}
 
         <div className="auth-footer">
           <p>

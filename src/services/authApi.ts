@@ -171,6 +171,27 @@ export const authApi = {
   },
 
   /**
+   * Create a new user (admin only)
+   */
+  async createUser(request: RegisterRequest): Promise<User> {
+    const token = getToken();
+    if (!token) {
+      throw new Error('Not authenticated');
+    }
+
+    const response = await fetch(getApiUrl('auth/users'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(request),
+    });
+
+    return handleResponse<User>(response);
+  },
+
+  /**
    * Logout (client-side only, removes token)
    */
   logout(): void {

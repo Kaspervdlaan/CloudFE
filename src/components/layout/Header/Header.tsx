@@ -80,8 +80,9 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
         </button>
       )}
       <div className="header__brand" onClick={() => navigate('/drive')}>
-        <MdCloud size={24} />
-        <span>LivingCloud</span>
+        {/* <MdCloud size={24} /> */}
+        <img src={`/favicon.svg`} width={24} height={24} alt="LivingCloud" />
+        <span>Living Cloud</span>
       </div>
       <div className="header__search">
         <MdSearch size={20} className="header__search-icon" />

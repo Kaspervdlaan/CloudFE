@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { authApi } from '../../services/authApi';
+// import { authApi } from '../../services/authApi';
 import { MdEmail, MdLock, MdLogin } from 'react-icons/md';
 import './_Login.scss';
 
@@ -12,16 +12,16 @@ export function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
 
   // Check for OAuth callback token
-  useEffect(() => {
-    const token = searchParams.get('token');
-    if (token) {
-      // Token is already stored by the callback, just navigate
-      navigate('/drive', { replace: true });
-    }
-  }, [searchParams, navigate]);
+  // useEffect(() => {
+  //   const token = searchParams.get('token');
+  //   if (token) {
+  //     // Token is already stored by the callback, just navigate
+  //     navigate('/drive', { replace: true });
+  //   }
+  // }, [searchParams, navigate]);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -45,9 +45,9 @@ export function Login() {
     }
   };
 
-  const handleGoogleAuth = () => {
-    authApi.initiateGoogleAuth();
-  };
+  // const handleGoogleAuth = () => {
+  //   authApi.initiateGoogleAuth();
+  // };
 
   return (
     <div className="auth-page">
@@ -98,7 +98,7 @@ export function Login() {
           </button>
         </form>
 
-        <div className="auth-divider">
+        {/* <div className="auth-divider">
           <span>OR</span>
         </div>
 
@@ -127,11 +127,14 @@ export function Login() {
             />
           </svg>
           Continue with Google
-        </button>
+        </button> */}
 
         <div className="auth-footer">
-          <p>
+          {/* <p>
             Don't have an account? <Link to="/register">Sign up</Link>
+          </p> */}
+          <p>
+            Contact your administrator for access
           </p>
         </div>
       </div>
