@@ -47,6 +47,12 @@
   font-weight: $font-weight-bold;
   color: $text-primary;
   min-width: 140px;
+  cursor: pointer;
+  transition: opacity $transition-fast $ease-in-out;
+  
+  &:hover {
+    opacity: 0.8;
+  }
   
   svg {
     color: $accent-500;
@@ -58,6 +64,57 @@
   }
 }
 
+.header__navigation {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs;
+  background-color: $primary-100;
+  border-radius: $radius-md;
+
+  @media (max-width: $breakpoint-md) {
+    gap: $spacing-xs;
+    padding: $spacing-xs;
+  }
+}
+
+.header__nav-button {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-secondary;
+  border-radius: $radius-sm;
+  transition: all $transition-base $ease-in-out;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $surface;
+    color: $text-primary;
+  }
+
+  &--active {
+    background-color: $surface;
+    color: $accent-600;
+    box-shadow: $shadow-soft;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    span {
+      display: none; // Hide text on mobile, show only icons
+    }
+    padding: $spacing-xs;
+  }
+}
 
 .header__search {
   flex: 1;

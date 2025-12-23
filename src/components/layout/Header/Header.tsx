@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, type ChangeEvent } from 'react';
-import { MdSearch, MdGridOn, MdList, MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose } from 'react-icons/md';
+import { MdSearch, MdGridOn, MdList, MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose, MdCloud, MdSmartToy } from 'react-icons/md';
 import { useTheme, type Theme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useFilesStore } from '../../../store/useFilesStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './_Header.scss';
 
 interface HeaderProps {
@@ -12,9 +12,11 @@ interface HeaderProps {
   onViewModeChange: (mode: 'list' | 'grid') => void;
   onToggleSidebar?: () => void;
   isSidebarOpen?: boolean;
+  showSearch?: boolean;
+  showViewToggle?: boolean;
 }
 
-export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, isSidebarOpen }: HeaderProps) {
+export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, isSidebarOpen, showSearch = true, showViewToggle = true }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const themeDropdownRef = useRef<HTMLDivElement>(null);
@@ -22,6 +24,7 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
   const { user, logout } = useAuth();
   const resetFilesStore = useFilesStore((state) => state.reset);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -84,33 +87,55 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
         <img src={`/favicon.svg`} width={24} height={24} alt="LivingCloud" />
         <span>Living Cloud</span>
       </div>
-      <div className="header__search">
-        <MdSearch size={20} className="header__search-icon" />
-        <input
-          type="text"
-          className="header__search-input"
-          placeholder="Search files..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
+      <div className="header__navigation">
+        <button
+          className={`header__nav-button ${location.pathname === '/drive' ? 'header__nav-button--active' : ''}`}
+          onClick={() => navigate('/drive')}
+          title="Drive"
+        >
+          <MdCloud size={18} />
+          <span>Drive</span>
+        </button>
+        <button
+          className={`header__nav-button ${location.pathname === '/ai' ? 'header__nav-button--active' : ''}`}
+          onClick={() => navigate('/ai')}
+          title="AI Chat"
+        >
+          <MdSmartToy size={18} />
+          <span>AI Chat</span>
+        </button>
       </div>
-      <div className="header__actions">
-        <div className="header__view-toggle">
-          <button
-            className={`header__view-button ${viewMode === 'grid' ? 'header__view-button--active' : ''}`}
-            onClick={() => onViewModeChange('grid')}
-            title="Grid view"
-          >
-            <MdGridOn size={18} />
-          </button>
-          <button
-            className={`header__view-button ${viewMode === 'list' ? 'header__view-button--active' : ''}`}
-            onClick={() => onViewModeChange('list')}
-            title="List view"
-          >
-            <MdList size={18} />
-          </button>
+      {showSearch && (
+        <div className="header__search">
+          <MdSearch size={20} className="header__search-icon" />
+          <input
+            type="text"
+            className="header__search-input"
+            placeholder="Search files..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
         </div>
+      )}
+      <div className="header__actions">
+        {showViewToggle && (
+          <div className="header__view-toggle">
+            <button
+              className={`header__view-button ${viewMode === 'grid' ? 'header__view-button--active' : ''}`}
+              onClick={() => onViewModeChange('grid')}
+              title="Grid view"
+            >
+              <MdGridOn size={18} />
+            </button>
+            <button
+              className={`header__view-button ${viewMode === 'list' ? 'header__view-button--active' : ''}`}
+              onClick={() => onViewModeChange('list')}
+              title="List view"
+            >
+              <MdList size={18} />
+            </button>
+          </div>
+        )}
         <div className="header__theme-picker" ref={themeDropdownRef}>
           <button
             className="header__theme-button"

@@ -16,6 +16,9 @@ interface LayoutProps {
   dragOverFolderId?: string | null;
   users?: User[];
   onUserClick?: (user: User) => void;
+  showSearch?: boolean;
+  showViewToggle?: boolean;
+  showSidebar?: boolean;
 }
 
 export function Layout({
@@ -30,6 +33,9 @@ export function Layout({
   dragOverFolderId,
   users,
   onUserClick,
+  showSearch = true,
+  showViewToggle = true,
+  showSidebar = true,
 }: LayoutProps) {
   // Start with sidebar closed on mobile, open on desktop
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -69,22 +75,26 @@ export function Layout({
         onSearch={onSearch}
         viewMode={viewMode}
         onViewModeChange={onViewModeChange}
-        onToggleSidebar={toggleSidebar}
+        onToggleSidebar={showSidebar ? toggleSidebar : undefined}
         isSidebarOpen={isSidebarOpen}
+        showSearch={showSearch}
+        showViewToggle={showViewToggle}
       />
       <div className="layout__body">
-        {isSidebarOpen && <div className="layout__overlay" onClick={closeSidebar} />}
-        <Sidebar
-          isOpen={isSidebarOpen}
-          onFileDrop={onFileDrop}
-          onDropFiles={onDropFiles}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          dragOverFolderId={dragOverFolderId}
-          users={users}
-          onUserClick={onUserClick}
-        />
-        <main className="layout__main">{children}</main>
+        {showSidebar && isSidebarOpen && <div className="layout__overlay" onClick={closeSidebar} />}
+        {showSidebar && (
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onFileDrop={onFileDrop}
+            onDropFiles={onDropFiles}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            dragOverFolderId={dragOverFolderId}
+            users={users}
+            onUserClick={onUserClick}
+          />
+        )}
+        <main className={`layout__main ${!showSidebar ? 'layout__main--no-sidebar' : ''}`}>{children}</main>
       </div>
     </div>
   );
