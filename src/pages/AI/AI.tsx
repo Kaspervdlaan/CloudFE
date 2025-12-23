@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { MdSend, MdPerson } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
-import { useAuth } from '../../contexts/AuthContext';
 import './_AI.scss';
 
 interface Message {
@@ -12,7 +11,6 @@ interface Message {
 }
 
 export function AI() {
-  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -73,6 +71,7 @@ export function AI() {
 
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [searchQuery, setSearchQuery] = useState('');
+  console.log('searchQuery', searchQuery);
 
   return (
     <Layout
