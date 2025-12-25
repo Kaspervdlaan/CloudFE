@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, type ChangeEvent } from 'react';
-import { MdSearch, MdGridOn, MdList, MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose, MdCloud, MdSmartToy } from 'react-icons/md';
+import { MdSearch, MdGridOn, MdList, MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose, MdSmartToy } from 'react-icons/md';
 import { Cloud } from 'lucide-react';
 import { useTheme, type Theme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
