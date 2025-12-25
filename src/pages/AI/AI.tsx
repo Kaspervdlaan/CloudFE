@@ -2,13 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { MdSend, MdPerson } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import './_AI.scss';
-
-interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-}
+import { api } from '../../utils/api';
+import type { Message } from '../../types/ai';
 
 export function AI() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,21 +31,38 @@ export function AI() {
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput('');
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: `I received your message: "${userMessage.content}". This is a placeholder response. Connect this to your AI API endpoint to get real responses.`,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+    try {
+      const response = await api.chatWithAIWithHistory(updatedMessages);
+      console.log('response', response);
+      
+      // Extract the reply from the response
+      // The API returns: { model: string, reply: string, raw: any }
+      // handleResponse wraps it in APIResponse, so it's: { data: { model: string, reply: string, raw: any } }
+      const reply = (response.data as any)?.reply || (response as any).reply || '';
+      
+      if (reply) {
+        const assistantMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: reply,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      } else {
+        console.error('No reply in response:', response);
+      }
+    } catch (err) {
+      console.error('AI chat error:', err);
+      // Remove the user message on error so they can retry
+      setMessages((prev) => prev.slice(0, -1));
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

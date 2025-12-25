@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, type ChangeEvent } from 'react';
 import { MdSearch, MdGridOn, MdList, MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose, MdCloud, MdSmartToy } from 'react-icons/md';
+import { Cloud } from 'lucide-react';
 import { useTheme, type Theme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useFilesStore } from '../../../store/useFilesStore';
@@ -83,8 +84,7 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
         </button>
       )}
       <div className="header__brand" onClick={() => navigate('/drive')}>
-        {/* <MdCloud size={24} /> */}
-        <img src={`/favicon.svg`} width={24} height={24} alt="LivingCloud" />
+        <Cloud size={24} />
         <span>Living Cloud</span>
       </div>
       <div className="header__navigation">
@@ -93,7 +93,7 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
           onClick={() => navigate('/drive')}
           title="Drive"
         >
-          <MdCloud size={18} />
+          <Cloud size={18} />
           <span>Drive</span>
         </button>
         <button

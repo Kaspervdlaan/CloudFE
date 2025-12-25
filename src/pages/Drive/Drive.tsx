@@ -19,7 +19,8 @@ import { DeleteConfirmModal } from '../../components/common/DeleteConfirmModal/D
 import { ShareModal } from '../../components/common/ShareModal/ShareModal';
 import { CreateUserModal } from '../../components/common/CreateUserModal/CreateUserModal';
 import { Button } from '../../components/common/Button/Button';
-import { MdCreateNewFolder, MdUpload, MdArrowBack, MdCloud, MdEdit, MdDelete, MdShare, MdSettings, MdPersonAdd } from 'react-icons/md';
+import { MdCreateNewFolder, MdUpload, MdArrowBack, MdEdit, MdDelete, MdShare, MdSettings, MdPersonAdd } from 'react-icons/md';
+import { Cloud } from 'lucide-react';
 import type { File } from '../../types/file';
 import type { User } from '../../types/auth';
 import { isImageFile, isVideoFile, isAudioFile, isTextFile, isPdfFile, isOfficeFile, isMarkdownFile, isCsvFile, isCodeFile } from '../../utils/fileUtils';
@@ -456,7 +457,7 @@ export function Drive() {
                 title="Go to My Drive"
                 aria-label="Go to My Drive"
               >
-                <MdCloud size={24} />
+                <Cloud size={24} />
               </button>
             ) : currentFolderId !== undefined || viewingUserId ? (
               <button
@@ -474,7 +475,7 @@ export function Drive() {
                 title={user?.name ? `Go to ${user.name}'s Drive` : 'Go to My Drive'}
                 aria-label={user?.name ? `Go to ${user.name}'s Drive` : 'Go to My Drive'}
               >
-                <MdCloud size={24} />
+                <Cloud size={24} />
               </button>
             )}
             {fileToRename === currentFolderId && currentFolder ? (

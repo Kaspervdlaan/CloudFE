@@ -1,5 +1,6 @@
 import type { File, Folder, CreateFolderRequest } from '../types/file';
 import type { APIResponse, APIError } from '../types/api';
+import type { Message } from '../types/ai';
 import { getApiUrl } from '../config/api';
 import { getToken } from '../services/authApi';
 
@@ -286,5 +287,54 @@ export const api = {
     
     return handleResponse<File[]>(response);
   },
-};
 
+  /**
+   * Chat with AI
+   */
+  async chatWithAI(prompt: string): Promise<APIResponse<Message[]>> {
+    const response = await fetch(getApiUrl('ai/chat'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getHeaders(),
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+        temperature: 0.9
+      }),
+    });
+    return handleResponse<Message[]>(response);
+  },
+
+  async chatWithAIWithHistory(messages: Message[]): Promise<APIResponse<{ reply: string; model: string; raw: any }>> {
+    // Serialize messages - convert Date objects to ISO strings for JSON
+    const serializedMessages = messages.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+      timestamp: msg.timestamp instanceof Date 
+        ? msg.timestamp.toISOString() 
+        : msg.timestamp,
+    }));
+
+    const response = await fetch(getApiUrl('ai/chat'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getHeaders(),
+      },
+      body: JSON.stringify({
+        messages: serializedMessages,
+        temperature: 0.2,
+      }),
+    });
+    return handleResponse<{ reply: string; model: string; raw: any }>(response);
+  },
+
+  getHealth: async (): Promise<APIResponse<string>> => {
+    const response = await fetch(getApiUrl('ai/health'), {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    return handleResponse<string>(response);
+  },
+};
