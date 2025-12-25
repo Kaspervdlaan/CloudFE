@@ -330,6 +330,89 @@ export const api = {
     return handleResponse<{ reply: string; model: string; raw: any }>(response);
   },
 
+  /**
+   * Stream chat with AI (for real-time response updates)
+   */
+  async streamChatWithHistory(
+    messages: Message[],
+    onChunk: (chunk: string) => void
+  ): Promise<void> {
+    // Serialize messages - convert Date objects to ISO strings for JSON
+    const serializedMessages = messages.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+      timestamp: msg.timestamp instanceof Date 
+        ? msg.timestamp.toISOString() 
+        : msg.timestamp,
+    }));
+
+    const response = await fetch(getApiUrl('ai/chat/stream'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getHeaders(),
+      },
+      body: JSON.stringify({
+        messages: serializedMessages,
+        temperature: 0.2,
+      }),
+    });
+
+    if (!response.ok) {
+      // Handle 401 Unauthorized - redirect to login
+      if (response.status === 401) {
+        localStorage.removeItem('drive-auth-token');
+        window.location.href = '/';
+      }
+      
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      try {
+        const errorData: APIError = await response.json();
+        errorMessage = errorData.error?.message || errorMessage;
+      } catch {
+        errorMessage = response.statusText || errorMessage;
+      }
+      throw new Error(errorMessage);
+    }
+
+    if (!response.body) {
+      throw new Error('Response body is null');
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+            if (data === '[DONE]') return;
+            
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.content) {
+                onChunk(parsed.content);
+              }
+            } catch (e) {
+              console.error('Parse error:', e);
+            }
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  },
+
   getHealth: async (): Promise<APIResponse<string>> => {
     const response = await fetch(getApiUrl('ai/health'), {
       method: 'GET',

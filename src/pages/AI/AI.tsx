@@ -36,30 +36,34 @@ export function AI() {
     setInput('');
     setIsLoading(true);
 
+    // Create assistant message placeholder for streaming
+    const assistantMessageId = Date.now().toString();
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, assistantMessage]);
+
     try {
-      const response = await api.chatWithAIWithHistory(updatedMessages);
-      console.log('response', response);
+      let fullResponse = '';
       
-      // Extract the reply from the response
-      // The API returns: { model: string, reply: string, raw: any }
-      // handleResponse wraps it in APIResponse, so it's: { data: { model: string, reply: string, raw: any } }
-      const reply = (response.data as any)?.reply || (response as any).reply || '';
-      
-      if (reply) {
-        const assistantMessage: Message = {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: reply,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
-      } else {
-        console.error('No reply in response:', response);
-      }
+      await api.streamChatWithHistory(updatedMessages, (chunk: string) => {
+        fullResponse += chunk;
+        // Update the assistant message with accumulated content
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMessageId
+              ? { ...msg, content: fullResponse }
+              : msg
+          )
+        );
+      });
     } catch (err) {
       console.error('AI chat error:', err);
-      // Remove the user message on error so they can retry
-      setMessages((prev) => prev.slice(0, -1));
+      // Remove both user and assistant messages on error so they can retry
+      setMessages((prev) => prev.slice(0, -2));
     } finally {
       setIsLoading(false);
     }
