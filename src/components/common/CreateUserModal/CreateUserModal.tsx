@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { MdClose, MdPersonAdd, MdEmail, MdLock, MdPerson } from 'react-icons/md';
 import { Button } from '../Button/Button';
-import { authApi } from '../../../services/authApi';
+import { authApi, getToken, setToken } from '../../../services/authApi';
 import './_CreateUserModal.scss';
 
 interface CreateUserModalProps {
@@ -50,11 +50,20 @@ export function CreateUserModal({
     setIsLoading(true);
 
     try {
-      await authApi.createUser({
+      // Save the current admin token before registering
+      const currentToken = getToken();
+      
+      // Call register endpoint to create the user
+      await authApi.register({
         name: name.trim(),
         email: email.trim(),
         password,
       });
+      
+      // Restore the admin's token (register sets a new token, but we want to stay logged in as admin)
+      if (currentToken) {
+        setToken(currentToken);
+      }
       
       // Reset form
       setName('');
