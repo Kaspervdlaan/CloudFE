@@ -24,37 +24,47 @@ export function AI() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date(),
-    };
-
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
+    // Store user message content before clearing input
+    const userMessageContent = input.trim();
     setInput('');
     setIsLoading(true);
 
+    // Generate unique IDs to prevent collisions
+    const baseTime = Date.now();
+    const userMessageId = `user-${baseTime}-${Math.random().toString(36).substr(2, 9)}`;
+    const assistantMessageId = `assistant-${baseTime + 1}-${Math.random().toString(36).substr(2, 9)}`;
+
+    const userMessage: Message = {
+      id: userMessageId,
+      role: 'user',
+      content: userMessageContent,
+      timestamp: new Date(),
+    };
+
     // Create assistant message placeholder for streaming
-    const assistantMessageId = Date.now().toString();
     const assistantMessage: Message = {
       id: assistantMessageId,
       role: 'assistant',
       content: '',
       timestamp: new Date(),
     };
-    setMessages((prev) => [...prev, assistantMessage]);
+
+    // Add both messages at once
+    const updatedMessages = [...messages, userMessage, assistantMessage];
+    setMessages(updatedMessages);
 
     try {
       let fullResponse = '';
       
-      await api.streamChatWithHistory(updatedMessages, (chunk: string) => {
+      // Only send messages up to the user message (not the empty assistant placeholder)
+      const messagesToSend = [...messages, userMessage];
+      
+      await api.streamChatWithHistory(messagesToSend, (chunk: string) => {
         fullResponse += chunk;
-        // Update the assistant message with accumulated content
+        // Update ONLY the assistant message - check both ID and role to be safe
         setMessages((prev) =>
           prev.map((msg) =>
-            msg.id === assistantMessageId
+            msg.id === assistantMessageId && msg.role === 'assistant'
               ? { ...msg, content: fullResponse }
               : msg
           )
@@ -63,7 +73,7 @@ export function AI() {
     } catch (err) {
       console.error('AI chat error:', err);
       // Remove both user and assistant messages on error so they can retry
-      setMessages((prev) => prev.slice(0, -2));
+      setMessages((prev) => prev.filter(msg => msg.id !== userMessageId && msg.id !== assistantMessageId));
     } finally {
       setIsLoading(false);
     }
