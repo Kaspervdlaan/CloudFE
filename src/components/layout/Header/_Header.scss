@@ -278,7 +278,7 @@
   font-size: $font-size-sm;
 
   @media (max-width: $breakpoint-md) {
-    display: none; // Hide user name on mobile to save space
+    padding: 0;
   }
 }
 .header__user-name {

@@ -24,6 +24,7 @@ export function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
   const { user, logout } = useAuth();
   const resetFilesStore = useFilesStore((state) => state.reset);
   const navigate = useNavigate();
+  const isMobile = window.innerWidth < 768;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -76,7 +77,7 @@ export function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
         </button>
       )}
       <div className="header__brand" onClick={() => navigate('/desktop')}>
-        <Cloud size={24} />
+        <Cloud size={isMobile ? 18 : 24} />
         <span>Living Cloud</span>
       </div>
       {/* <div className="header__navigation">
