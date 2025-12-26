@@ -17,7 +17,7 @@ interface HeaderProps {
   showViewToggle?: boolean;
 }
 
-export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, isSidebarOpen, showSearch = true, showViewToggle = true }: HeaderProps) {
+export function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) {
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const themeDropdownRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
