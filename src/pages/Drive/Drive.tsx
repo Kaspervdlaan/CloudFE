@@ -170,10 +170,6 @@ export function Drive() {
     setSearchQuery(query);
   };
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -664,16 +660,24 @@ export function Drive() {
           <div className="drive__fab" ref={fabMenuRef}>
             {isFabMenuOpen && (
               <div className="drive__fab-menu">
-                <button
-                  className="drive__fab-menu-item"
-                  onClick={() => {
-                    handleUploadClick();
-                    setIsFabMenuOpen(false);
-                  }}
-                >
+                <label className="drive__fab-menu-item" style={{ cursor: 'pointer' }}>
+                  <input
+                    type="file"
+                    multiple
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      if (files && files.length > 0) {
+                        uploadFiles(files);
+                      }
+                      // Reset input
+                      e.target.value = '';
+                      setIsFabMenuOpen(false);
+                    }}
+                  />
                   <MdUpload size={20} />
                   <span>Upload</span>
-                </button>
+                </label>
                 <button
                   className="drive__fab-menu-item"
                   onClick={() => {

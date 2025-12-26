@@ -305,6 +305,18 @@
   transition: all $transition-base $ease-in-out;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
+  color: $text-primary;
+  text-decoration: none;
+  user-select: none;
+
+  // When used as label
+  input[type="file"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
 
   &:hover {
     background: $hover;
