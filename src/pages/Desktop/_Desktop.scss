@@ -8,13 +8,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-xl;
+  padding: $spacing-md;
   background: $background;
   position: relative;
   overflow: hidden;
 
   @media (max-width: $breakpoint-md) {
-    padding-top: $spacing-xl;
+    padding: $spacing-sm;
+    align-items: flex-start;
   }
 
   &__container {
@@ -25,6 +26,10 @@
     align-items: center;
     justify-content: center;
     gap: $spacing-lg;
+
+    @media (max-width: $breakpoint-md) {
+      padding-top: $spacing-lg;
+    }
 
     &-header {
       width: 100%;
@@ -40,12 +45,12 @@
 
   &__apps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     width: 100%;
-    gap: $spacing-xl;
+    gap: $spacing-sm;
 
     @media (max-width: $breakpoint-md) {
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       font-size: $font-size-xs;
     }
   }
@@ -56,11 +61,9 @@
     align-items: center;
     justify-content: center;
     gap: $spacing-md;
-    padding: $spacing-xl;
+    padding: $spacing-lg;
     background: transparent;
     border: none;
-    // border: 1px solid $border;
-    // border-radius: $radius-lg;
     cursor: pointer;
     transition: all $transition-base $ease-out;
     text-align: center;
@@ -68,27 +71,13 @@
     position: relative;
     overflow: hidden;
 
-    // &::before {
-    //   content: '';
-    //   position: absolute;
-    //   top: 0;
-    //   left: 0;
-    //   right: 0;
-    //   bottom: 0;
-    //   background: linear-gradient(135deg, transparent 0%, rgba(0, 255, 0, 0.05) 100%);
-    //   opacity: 0;
-    //   transition: opacity $transition-base $ease-out;
-    // }
+    @media (max-width: $breakpoint-md) {
+      min-height: unset;
+      padding: $spacing-xs;
+    }
 
     &:hover {
       transform: translateY(-4px);
-      // border-color: $accent-500;
-      // box-shadow: $shadow-medium, $glow-green;
-      // background: $hover;
-
-      // &::before {
-      //   opacity: 1;
-      // }
 
       .desktop__app-icon {
         transform: scale(1.1);
@@ -98,11 +87,6 @@
     &:active {
       transform: translateY(-2px);
     }
-
-    // &:focus-visible {
-    //   outline: 2px solid $accent-500;
-    //   outline-offset: 2px;
-    // }
   }
 
   &__app-icon {
