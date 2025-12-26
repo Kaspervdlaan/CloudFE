@@ -25,11 +25,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: $spacing-lg;
+    gap: $spacing-xl;
+    padding-bottom: $spacing-lg;
 
     @media (max-width: $breakpoint-md) {
+      gap: $spacing-lg;
       padding-top: $spacing-lg;
-      padding-bottom: $spacing-lg;
       height: 100%;
     }
 
