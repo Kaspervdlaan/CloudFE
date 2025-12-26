@@ -20,7 +20,7 @@
 
   &__container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 880px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,9 +29,12 @@
 
     @media (max-width: $breakpoint-md) {
       padding-top: $spacing-lg;
+      padding-bottom: $spacing-lg;
+      height: 100%;
     }
 
     &-header {
+      flex: 1;
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -45,7 +48,7 @@
 
   &__apps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     width: 100%;
     gap: $spacing-sm;
 
@@ -61,19 +64,17 @@
     align-items: center;
     justify-content: center;
     gap: $spacing-md;
-    padding: $spacing-lg;
+    padding: $spacing-sm $spacing-lg;
     background: transparent;
     border: none;
     cursor: pointer;
     transition: all $transition-base $ease-out;
     text-align: center;
-    min-height: 180px;
     position: relative;
     overflow: hidden;
 
     @media (max-width: $breakpoint-md) {
-      min-height: unset;
-      padding: $spacing-xs;
+      padding: $spacing-xs $spacing-sm;
     }
 
     &:hover {
