@@ -9,7 +9,7 @@
   gap: $spacing-lg;
 
   @media (max-width: $breakpoint-md) {
-    padding: $spacing-sm $spacing-md;
+    padding: $spacing-md $spacing-md;
     gap: $spacing-sm;
   }
 }

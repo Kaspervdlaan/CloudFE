@@ -20,7 +20,7 @@ export function Desktop() {
     },
     {
       id: 'ai',
-      name: 'Anastasia',
+      name: 'MarkovAI',
       icon: MdSmartToy,
       path: '/ai',
       color: '#10B981',
@@ -66,28 +66,7 @@ export function Desktop() {
       icon: MdSettings,
       path: '/settings',
       color: '#F59E0B',
-    },
-    {
-      id: 'blog',
-      name: 'Blog',
-      icon: MdNote,
-      path: '/blog',
-      color: '#F59E0B',
-    },
-    {
-      id: 'profile',
-      name: 'Profile',
-      icon: MdPerson,
-      path: '/profile',
-      color: '#F59E0B',
-    },
-    {
-      id: 'settings',
-      name: 'Settings',
-      icon: MdSettings,
-      path: '/settings',
-      color: '#F59E0B',
-    },
+    }
   ];
 
   const handleAppClick = (path: string) => {
