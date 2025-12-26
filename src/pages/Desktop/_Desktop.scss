@@ -95,10 +95,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
+    width: fit-content;
+    height: fit-content;
+    padding: $spacing-md;
     border-radius: $radius-lg;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 1);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     transition: transform $transition-base $ease-out;
     position: relative;

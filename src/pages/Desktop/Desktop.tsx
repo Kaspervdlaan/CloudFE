@@ -130,7 +130,7 @@ export function Desktop() {
                   aria-label={`Open ${app.name}`}
                 >
                   <div className="desktop__app-icon" style={{ color: app.color }}>
-                    <Icon size={64} />
+                    <Icon size={32} />
                   </div>
                   <span className="desktop__app-name">{app.name}</span>
                 </button>
