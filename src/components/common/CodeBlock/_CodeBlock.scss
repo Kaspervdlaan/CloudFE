@@ -1,0 +1,50 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.code-block {
+  width: 100%;
+  background: $primary-100;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  overflow: hidden;
+  margin: $spacing-md 0;
+  font-family: $font-family;
+  box-shadow: $shadow-soft;
+}
+
+.code-block__header {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  background: $primary-200;
+  border-bottom: 1px solid $border;
+  gap: $spacing-sm;
+}
+
+.code-block__filename {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $text-secondary;
+  font-family: $font-family;
+}
+
+.code-block__content {
+  overflow-x: auto;
+  background: black;
+  padding: $spacing-md;
+  
+  pre {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    font-family: $font-family !important;
+    
+    code {
+      font-family: $font-family !important;
+    }
+  }
+}
+

@@ -87,12 +87,9 @@
   gap: 1rem;
   padding: $spacing-sm;
   animation: fadeIn 0.3s ease-in;
-  align-items: center;
-  background-color: var(--primary-300);
+  align-items: flex-end;
   width: fit-content;
   align-self: flex-start;
-  border-radius: $radius-10xl;
-  corner-shape: $corner-shape-squircle;
 
   &--user {
     border-radius: $radius-10xl;
@@ -139,6 +136,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-bottom: $spacing-xs;
 }
 
 .ai-chat__message-content {
@@ -147,11 +145,24 @@
   max-width: 85%;
   word-wrap: break-word;
   line-height: 1.6;
+
+  // Allow code blocks to be wider if needed
+  :global(.code-block) {
+    max-width: 100%;
+    min-width: 0;
+  }
 }
 
 .ai-chat__message-text {
   white-space: pre-wrap;
   font-size: 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.ai-chat__message-text-content {
+  white-space: pre-wrap;
 }
 
 .ai-chat__typing-indicator {

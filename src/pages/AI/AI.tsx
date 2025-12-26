@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { MdSend, MdPerson, MdSmartToy } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
+import { CodeBlock } from '../../components/common/CodeBlock/CodeBlock';
+import { parseCodeBlocks } from '../../utils/codeBlockParser';
 import './_AI.scss';
 import { api } from '../../utils/api';
 import type { Message } from '../../types/ai';
@@ -99,6 +101,38 @@ export function AI() {
   const [searchQuery, setSearchQuery] = useState('');
   console.log('searchQuery', searchQuery);
 
+  // Component to render message content with code blocks
+  function MessageContent({ content }: { content: string }) {
+    const parsed = parseCodeBlocks(content);
+
+    return (
+      <div className="ai-chat__message-text">
+        {parsed.parts.map((part, index) => {
+          if (part.type === 'code' && part.codeBlock) {
+            return (
+              <CodeBlock
+                key={index}
+                code={part.codeBlock.code}
+                language={part.codeBlock.language}
+                filename={part.codeBlock.filename}
+              />
+            );
+          }
+          return (
+            <div key={index} className="ai-chat__message-text-content">
+              {part.content.split('\n').map((line, i) => (
+                <span key={i}>
+                  {line}
+                  {i < part.content.split('\n').length - 1 && <br />}
+                </span>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <Layout
       onSearch={setSearchQuery}
@@ -135,14 +169,18 @@ export function AI() {
                     )}
                   </div>
                   <div className="ai-chat__message-content">
-                    <div className="ai-chat__message-text">
-                      {message.content.split('\n').map((line, i) => (
-                        <span key={i}>
-                          {line}
-                          {i < message.content.split('\n').length - 1 && <br />}
-                        </span>
-                      ))}
-                    </div>
+                    {message.role === 'assistant' ? (
+                      <MessageContent content={message.content} />
+                    ) : (
+                      <div className="ai-chat__message-text">
+                        {message.content.split('\n').map((line, i) => (
+                          <span key={i}>
+                            {line}
+                            {i < message.content.split('\n').length - 1 && <br />}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
