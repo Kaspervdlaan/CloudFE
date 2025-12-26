@@ -87,19 +87,21 @@
   gap: 1rem;
   padding: 1rem;
   animation: fadeIn 0.3s ease-in;
+  align-items: center;
 
   &--user {
     flex-direction: row-reverse;
 
     .ai-chat__message-content {
+      text-align: right;
       background: var(--primary-color);
-      color: white;
+      color: var(--text-primary);
       border-radius: $radius-lg $radius-lg $radius-sm $radius-lg;
     }
 
     .ai-chat__message-avatar {
       background: var(--primary-color);
-      color: white;
+      color: var(--text-primary);
     }
   }
 
