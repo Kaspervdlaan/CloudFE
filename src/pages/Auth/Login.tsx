@@ -26,7 +26,7 @@ export function Login() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/drive', { replace: true });
+      navigate('/desktop', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 

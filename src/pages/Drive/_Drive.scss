@@ -24,16 +24,17 @@
   top: 0;
 
   @media (max-width: $breakpoint-md) {
-    position: fixed;
-    bottom: 0;
-    top: auto;
-    left: 0;
-    right: 0;
-    gap: $spacing-sm;
-    border-bottom: none;
-    border-top: 1px solid $border;
-    z-index: 100;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+    padding: $spacing-xs $spacing-sm;
+    // position: fixed;
+    // bottom: 0;
+    // top: auto;
+    // left: 0;
+    // right: 0;
+    // gap: $spacing-sm;
+    // border-bottom: none;
+    // border-top: 1px solid $border;
+    // z-index: 100;
+    // box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -128,6 +129,43 @@
   color: $text-primary;
 }
 
+.drive__view-toggle {
+  display: flex;
+  gap: $spacing-xs;
+  background-color: $primary-100;
+  padding: $spacing-xs;
+  border-radius: $radius-md;
+  margin-right: $spacing-md;
+
+  @media (max-width: $breakpoint-md) {
+    margin-right: $spacing-sm;
+  }
+}
+
+.drive__view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xs;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: $text-secondary;
+  border-radius: $radius-sm;
+  transition: all $transition-base $ease-in-out;
+  
+  &:hover {
+    background-color: $surface;
+    color: $text-primary;
+  }
+  
+  &--active {
+    background-color: $surface;
+    color: $accent-600;
+    box-shadow: $shadow-soft;
+  }
+}
+
 .drive__actions {
   display: flex;
   align-items: center;
@@ -168,7 +206,7 @@
 }
 
 .drive__delete-folder {
-  padding: $spacing-sm;
+  padding: $spacing-xs;
 }
 
 .drive__loading,
@@ -189,6 +227,92 @@
   
   p {
     font-size: $font-size-lg;
+  }
+}
+
+.drive__fab {
+  position: fixed;
+  bottom: $spacing-xl;
+  right: $spacing-xl;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $spacing-md;
+
+  @media (max-width: $breakpoint-md) {
+    bottom: $spacing-lg;
+    right: $spacing-lg;
+  }
+}
+
+.drive__fab-button {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: $accent-500;
+  color: $background;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: $shadow-medium;
+  transition: all $transition-base $ease-in-out;
+  z-index: 1001;
+
+  &:hover {
+    background: $accent-600;
+    transform: scale(1.1);
+    box-shadow: $shadow-strong;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.drive__fab-menu {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+  animation: slideUp $transition-base $ease-out;
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.drive__fab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: $surface;
+  border: none;
+  box-shadow: $shadow-soft;
+  border-radius: $radius-md;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all $transition-base $ease-in-out;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+
+  &:hover {
+    background: $hover;
+    transform: translateX(-4px);
+  }
+
+  &:active {
+    transform: translateX(-2px);
   }
 }
 

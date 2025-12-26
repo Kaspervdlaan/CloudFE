@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect, type ChangeEvent } from 'react';
-import { MdSearch, MdGridOn, MdList, MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose, MdSmartToy } from 'react-icons/md';
+import { useState, useRef, useEffect } from 'react';
+import { MdPalette, MdExpandMore, MdLogout, MdPerson, MdMenu, MdClose } from 'react-icons/md';
 import { Cloud } from 'lucide-react';
 import { useTheme, type Theme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useFilesStore } from '../../../store/useFilesStore';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './_Header.scss';
 
 interface HeaderProps {
@@ -18,20 +18,12 @@ interface HeaderProps {
 }
 
 export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, isSidebarOpen, showSearch = true, showViewToggle = true }: HeaderProps) {
-  const [searchQuery, setSearchQuery] = useState('');
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const themeDropdownRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
   const resetFilesStore = useFilesStore((state) => state.reset);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    onSearch(query);
-  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -83,11 +75,11 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
           {isSidebarOpen ? <MdClose size={20} /> : <MdMenu size={20} />}
         </button>
       )}
-      <div className="header__brand" onClick={() => navigate('/drive')}>
+      <div className="header__brand" onClick={() => navigate('/desktop')}>
         <Cloud size={24} />
         <span>Living Cloud</span>
       </div>
-      <div className="header__navigation">
+      {/* <div className="header__navigation">
         <button
           className={`header__nav-button ${location.pathname === '/drive' ? 'header__nav-button--active' : ''}`}
           onClick={() => navigate('/drive')}
@@ -116,26 +108,8 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
             onChange={handleSearchChange}
           />
         </div>
-      )}
+      )} */}
       <div className="header__actions">
-        {showViewToggle && (
-          <div className="header__view-toggle">
-            <button
-              className={`header__view-button ${viewMode === 'grid' ? 'header__view-button--active' : ''}`}
-              onClick={() => onViewModeChange('grid')}
-              title="Grid view"
-            >
-              <MdGridOn size={18} />
-            </button>
-            <button
-              className={`header__view-button ${viewMode === 'list' ? 'header__view-button--active' : ''}`}
-              onClick={() => onViewModeChange('list')}
-              title="List view"
-            >
-              <MdList size={18} />
-            </button>
-          </div>
-        )}
         <div className="header__theme-picker" ref={themeDropdownRef}>
           <button
             className="header__theme-button"
@@ -143,7 +117,7 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
             title="Select theme"
           >
             <MdPalette size={18} />
-            <span className="header__theme-name">{themeNames[theme]}</span>
+            {/* <span className="header__theme-name">{themeNames[theme]}</span> */}
             <MdExpandMore size={16} className={`header__theme-chevron ${isThemeDropdownOpen ? 'header__theme-chevron--open' : ''}`} />
           </button>
           {isThemeDropdownOpen && (
@@ -162,7 +136,7 @@ export function Header({ onSearch, viewMode, onViewModeChange, onToggleSidebar, 
           )}
         </div>
         {user && (
-          <div className="header__user">
+          <div className="header__user" onClick={() => navigate('/profile')}>
             <MdPerson size={18} />
             <span className="header__user-name">{user.name}</span>
           </div>

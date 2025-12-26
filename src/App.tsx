@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Drive } from './pages/Drive/Drive';
 import { AI } from './pages/AI/AI';
+import { Desktop } from './pages/Desktop/Desktop';
+import { Profile } from './pages/Profile/Profile';
 import { Login } from './pages/Auth/Login';
 // import { Register } from './pages/Auth/Register';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -49,6 +51,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AI />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/desktop"
+        element={
+          <ProtectedRoute>
+            <Desktop />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />

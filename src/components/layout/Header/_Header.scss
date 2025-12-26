@@ -272,6 +272,7 @@
 
 .header__user {
   @include flex-center;
+  cursor: pointer;
   gap: $spacing-sm;
   padding: $spacing-xs $spacing-sm;
   color: $text-secondary;

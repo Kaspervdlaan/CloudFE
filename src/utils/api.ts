@@ -300,7 +300,6 @@ export const api = {
       },
       body: JSON.stringify({
         prompt: prompt,
-        temperature: 0.9
       }),
     });
     return handleResponse<Message[]>(response);

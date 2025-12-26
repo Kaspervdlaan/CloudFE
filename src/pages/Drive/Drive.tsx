@@ -19,7 +19,7 @@ import { DeleteConfirmModal } from '../../components/common/DeleteConfirmModal/D
 import { ShareModal } from '../../components/common/ShareModal/ShareModal';
 import { CreateUserModal } from '../../components/common/CreateUserModal/CreateUserModal';
 import { Button } from '../../components/common/Button/Button';
-import { MdCreateNewFolder, MdUpload, MdArrowBack, MdEdit, MdDelete, MdShare, MdSettings, MdPersonAdd } from 'react-icons/md';
+import { MdCreateNewFolder, MdUpload, MdArrowBack, MdEdit, MdDelete, MdShare, MdSettings, MdPersonAdd, MdGridOn, MdList, MdAdd, MdClose } from 'react-icons/md';
 import { Cloud } from 'lucide-react';
 import type { File } from '../../types/file';
 import type { User } from '../../types/auth';
@@ -92,7 +92,9 @@ export function Drive() {
   const [fileToRename, setFileToRename] = useState<string | null>(null);
   const [folderToShare, setFolderToShare] = useState<File | null>(null);
   const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
+  const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fabMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   
   const handleViewModeChange = (mode: 'list' | 'grid') => {
@@ -438,6 +440,23 @@ export function Drive() {
   // Get current folder if we're inside one
   const currentFolder = currentFolderId ? getFileById(currentFolderId) : null;
 
+  // Close FAB menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (fabMenuRef.current && !fabMenuRef.current.contains(event.target as Node)) {
+        setIsFabMenuOpen(false);
+      }
+    };
+
+    if (isFabMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isFabMenuOpen]);
+
   // Inner component to access DropZone context
   function DriveContent() {
     const dropZone = useDropZone();
@@ -528,7 +547,23 @@ export function Drive() {
                 </Button>
               )}
           </div>
-          {isAdminAtRoot ? (
+          <div className="drive__view-toggle">
+            <button
+              className={`drive__view-button ${viewMode === 'grid' ? 'drive__view-button--active' : ''}`}
+              onClick={() => handleViewModeChange('grid')}
+              title="Grid view"
+            >
+              <MdGridOn size={18} />
+            </button>
+            <button
+              className={`drive__view-button ${viewMode === 'list' ? 'drive__view-button--active' : ''}`}
+              onClick={() => handleViewModeChange('list')}
+              title="List view"
+            >
+              <MdList size={18} />
+            </button>
+          </div>
+          {isAdminAtRoot && (
             <div className="drive__actions">
               <Button
                 variant="ghost"
@@ -539,26 +574,7 @@ export function Drive() {
                 <span>Create User</span>
               </Button>
             </div>
-          ) : (
-            <div className="drive__actions">
-              <Button
-                variant="ghost"
-                onClick={handleUploadClick}
-                className="drive__upload"
-              >
-                <MdUpload size={20} />
-                <span>Upload</span>
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={handleCreateFolderFromContext}
-                className="drive__create-folder"
-              >
-                <MdCreateNewFolder size={20} />
-                <span>New Folder</span>
-              </Button>
-            </div>
-          )}
+          )} 
         </div>
 
         <input
@@ -643,6 +659,43 @@ export function Drive() {
           </>
         )}
         </div>
+        {/* Floating Action Button - only show when not admin at root */}
+        {!isAdminAtRoot && (
+          <div className="drive__fab" ref={fabMenuRef}>
+            {isFabMenuOpen && (
+              <div className="drive__fab-menu">
+                <button
+                  className="drive__fab-menu-item"
+                  onClick={() => {
+                    handleUploadClick();
+                    setIsFabMenuOpen(false);
+                  }}
+                >
+                  <MdUpload size={20} />
+                  <span>Upload</span>
+                </button>
+                <button
+                  className="drive__fab-menu-item"
+                  onClick={() => {
+                    handleCreateFolderFromContext();
+                    setIsFabMenuOpen(false);
+                  }}
+                >
+                  <MdCreateNewFolder size={20} />
+                  <span>New Folder</span>
+                </button>
+              </div>
+            )}
+            <button
+              className="drive__fab-button"
+              onClick={() => setIsFabMenuOpen(!isFabMenuOpen)}
+              aria-label="Create"
+              title="Create"
+            >
+              {isFabMenuOpen ? <MdClose size={24} /> : <MdAdd size={24} />}
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -665,6 +718,7 @@ export function Drive() {
       dragOverFolderId={dragOverFolderId}
       users={user?.role === 'admin' ? allUsers : undefined}
       onUserClick={handleUserClick}
+      showViewToggle={false}
     >
       <DropZone>
         <DriveContent />

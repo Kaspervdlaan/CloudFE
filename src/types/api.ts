@@ -1,5 +1,6 @@
 export interface APIResponse<T> {
   data: T;
+  reply?: string;
 }
 
 export interface APIError {
