@@ -46,7 +46,6 @@
   font-size: $font-size-xl;
   font-weight: $font-weight-bold;
   color: $text-primary;
-  min-width: 140px;
   cursor: pointer;
   transition: opacity $transition-fast $ease-in-out;
   
@@ -60,7 +59,7 @@
   }
 
   @media (max-width: $breakpoint-md) {
-    display: none;
+    font-size: $font-size-base;
   }
 }
 
