@@ -20,7 +20,7 @@ export function Desktop() {
     },
     {
       id: 'ai',
-      name: 'MarkovAI',
+      name: 'Markov',
       icon: MdSmartToy,
       path: '/ai',
       color: '#10B981',

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { MdSend, MdPerson } from 'react-icons/md';
+import { MdSend, MdPerson, MdSmartToy } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import './_AI.scss';
 import { api } from '../../utils/api';
@@ -129,13 +129,9 @@ export function AI() {
                 >
                   <div className="ai-chat__message-avatar">
                     {message.role === 'user' ? (
-                      <MdPerson size={20} />
+                      <MdPerson size={24} />
                     ) : (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                        <path d="M2 17l10 5 10-5" />
-                        <path d="M2 12l10 5 10-5" />
-                      </svg>
+                      <MdSmartToy size={24} />
                     )}
                   </div>
                   <div className="ai-chat__message-content">

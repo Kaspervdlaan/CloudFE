@@ -85,12 +85,21 @@
 .ai-chat__message {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
+  padding: $spacing-sm;
   animation: fadeIn 0.3s ease-in;
   align-items: center;
+  background-color: var(--primary-300);
+  width: fit-content;
+  align-self: flex-start;
+  border-radius: $radius-10xl;
+  corner-shape: $corner-shape-squircle;
 
   &--user {
+    border-radius: $radius-10xl;
+    corner-shape: $corner-shape-squircle;
     flex-direction: row-reverse;
+    background-color: var(--primary-200);
+    align-self: flex-end;
 
     .ai-chat__message-content {
       text-align: right;
@@ -106,6 +115,8 @@
   }
 
   &--assistant {
+    align-self: flex-start; // Explicitly align AI messages to the left
+
     .ai-chat__message-content {
       background: var(--background-secondary);
       color: var(--text-primary);
@@ -132,7 +143,7 @@
 
 .ai-chat__message-content {
   flex: 1;
-  padding: 0.875rem 1rem;
+  padding: .5rem 1rem;
   max-width: 85%;
   word-wrap: break-word;
   line-height: 1.6;
@@ -149,8 +160,8 @@
   padding: 0.5rem 0;
 
   span {
-    width: 8px;
-    height: 8px;
+    width: $spacing-xs;
+    height: $spacing-xs;
     border-radius: 50%;
     background: var(--text-secondary);
     animation: typing 1.4s infinite ease-in-out;
