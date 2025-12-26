@@ -26,7 +26,7 @@
     align-items: center;
     justify-content: center;
     gap: $spacing-xl;
-    padding-bottom: $spacing-lg;
+    padding-bottom: $spacing-xl;
 
     @media (max-width: $breakpoint-md) {
       gap: $spacing-lg;
@@ -45,18 +45,26 @@
       text-align: center;
       text-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
     }
+
+    &-subtitle {
+
+      @media (max-width: $breakpoint-md) {
+        font-size: $font-size-sm;
+        padding: 0 $spacing-sm;
+      }
+    }
   }
 
   &__apps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     width: 100%;
-    gap: $spacing-md;
+    gap: $spacing-sm;
 
     @media (max-width: $breakpoint-md) {
       grid-template-columns: repeat(4, 1fr);
       font-size: $font-size-xs;
-      gap: 0;
+      gap: $spacing-xs;
     }
   }
 
@@ -65,7 +73,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: $spacing-md;
+    gap: $spacing-sm;
     padding: $spacing-sm $spacing-lg;
     background: transparent;
     border: none;
@@ -114,6 +122,10 @@
     position: relative;
     z-index: 1;
     text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+
+    @media (max-width: $breakpoint-md) {
+      font-size: $font-size-sm;
+    }
   }
 }
 
