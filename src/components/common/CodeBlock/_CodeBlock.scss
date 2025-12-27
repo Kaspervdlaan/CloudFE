@@ -33,13 +33,13 @@
 
 .code-block__content {
   overflow-x: auto;
-  background: black;
+  background: rgb(40, 44, 52);
   padding: $spacing-md;
   
   pre {
     margin: 0 !important;
     padding: 0 !important;
-    background: transparent !important;
+    background: rgb(40, 44, 52) !important;
     font-family: $font-family !important;
     
     code {
