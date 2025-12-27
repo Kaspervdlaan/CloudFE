@@ -1,9 +1,6 @@
 @use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
 
-@use '../../../styles/variables' as *;
-@use '../../../styles/mixins' as *;
-
 .code-block {
   width: 100%;
   background: $primary-100;
@@ -18,6 +15,7 @@
 .code-block__header {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   padding: $spacing-sm $spacing-md;
   background: $primary-200;
   border-bottom: 1px solid $border;
@@ -29,6 +27,37 @@
   font-weight: $font-weight-medium;
   color: $text-secondary;
   font-family: $font-family;
+  flex: 1;
+}
+
+.code-block__copy-button {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  background: $primary-300;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  color: $text-primary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-base $ease-in-out;
+  font-family: $font-family;
+
+  &:hover {
+    background: $primary-400;
+    border-color: $accent-500;
+    color: $accent-500;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
 }
 
 .code-block__content {
