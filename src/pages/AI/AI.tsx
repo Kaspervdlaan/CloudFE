@@ -214,21 +214,10 @@ export function AI() {
                     <MdSmartToy size={24} />
                   </div>
                   <div className="ai-chat__message-content">
-                    <div className="ai-chat__loading-container">
-                      <div className="ai-chat__typing-indicator">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      </div>
-                      <button
-                        className="ai-chat__cancel-button"
-                        onClick={handleCancel}
-                        aria-label="Cancel"
-                        title="Cancel response"
-                      >
-                        <MdClose size={16} />
-                        <span>Cancel</span>
-                      </button>
+                    <div className="ai-chat__typing-indicator">
+                      <span></span>
+                      <span></span>
+                      <span></span>
                     </div>
                   </div>
                 </div>
@@ -250,14 +239,26 @@ export function AI() {
                 rows={1}
                 disabled={isLoading}
               />
-              <button
-                type="submit"
-                className="ai-chat__send-button"
-                disabled={!input.trim() || isLoading}
-                aria-label="Send message"
-              >
-                <MdSend size={20} />
-              </button>
+              {isLoading ? (
+                <button
+                  type="button"
+                  className="ai-chat__cancel-button"
+                  onClick={handleCancel}
+                  aria-label="Cancel"
+                  title="Cancel response"
+                >
+                  <MdClose size={20} />
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="ai-chat__send-button"
+                  disabled={!input.trim() || isLoading}
+                  aria-label="Send message"
+                >
+                  <MdSend size={20} />
+                </button>
+              )}
             </div>
             <div className="ai-chat__input-footer">
               <p className="ai-chat__input-hint">

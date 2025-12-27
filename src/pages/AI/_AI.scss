@@ -165,12 +165,6 @@
   white-space: pre-wrap;
 }
 
-.ai-chat__loading-container {
-  display: flex;
-  align-items: center;
-  gap: $spacing-md;
-}
-
 .ai-chat__typing-indicator {
   display: flex;
   gap: 0.5rem;
@@ -310,6 +304,31 @@
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+}
+
+.ai-chat__cancel-button {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  border: none;
+  background: $primary-400;
+  color: $text-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $primary-500;
+    color: $accent-500;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 
