@@ -165,6 +165,12 @@
   white-space: pre-wrap;
 }
 
+.ai-chat__loading-container {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
 .ai-chat__typing-indicator {
   display: flex;
   gap: 0.5rem;
@@ -188,6 +194,36 @@
     &:nth-child(3) {
       animation-delay: 0.4s;
     }
+  }
+}
+
+.ai-chat__cancel-button {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  background: $primary-300;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  color: $text-primary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-base $ease-in-out;
+  font-family: $font-family;
+
+  &:hover {
+    background: $primary-400;
+    border-color: $accent-500;
+    color: $accent-500;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 }
 

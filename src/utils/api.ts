@@ -334,7 +334,8 @@ export const api = {
    */
   async streamChatWithHistory(
     messages: Message[],
-    onChunk: (chunk: string) => void
+    onChunk: (chunk: string) => void,
+    signal?: AbortSignal
   ): Promise<void> {
     // Serialize messages - convert Date objects to ISO strings for JSON
     const serializedMessages = messages.map(msg => ({
@@ -355,6 +356,7 @@ export const api = {
         messages: serializedMessages,
         temperature: 0.2,
       }),
+      signal,
     });
 
     if (!response.ok) {
@@ -384,6 +386,12 @@ export const api = {
 
     try {
       while (true) {
+        // Check if aborted
+        if (signal?.aborted) {
+          reader.cancel();
+          throw new Error('Request aborted');
+        }
+
         const { done, value } = await reader.read();
         if (done) break;
 

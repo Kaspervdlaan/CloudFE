@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { MdSend, MdPerson, MdSmartToy } from 'react-icons/md';
+import { MdSend, MdPerson, MdSmartToy, MdClose } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { CodeBlock } from '../../components/common/CodeBlock/CodeBlock';
 import { parseCodeBlocks } from '../../utils/codeBlockParser';
@@ -13,6 +13,7 @@ export function AI() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -22,6 +23,14 @@ export function AI() {
     scrollToBottom();
   }, [messages]);
 
+  const handleCancel = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
@@ -30,6 +39,10 @@ export function AI() {
     const userMessageContent = input.trim();
     setInput('');
     setIsLoading(true);
+
+    // Create abort controller for cancellation
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     // Generate unique IDs to prevent collisions
     const baseTime = Date.now();
@@ -61,23 +74,34 @@ export function AI() {
       // Only send messages up to the user message (not the empty assistant placeholder)
       const messagesToSend = [...messages, userMessage];
       
-      await api.streamChatWithHistory(messagesToSend, (chunk: string) => {
-        fullResponse += chunk;
-        // Update ONLY the assistant message - check both ID and role to be safe
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMessageId && msg.role === 'assistant'
-              ? { ...msg, content: fullResponse }
-              : msg
-          )
-        );
-      });
-    } catch (err) {
-      console.error('AI chat error:', err);
-      // Remove both user and assistant messages on error so they can retry
-      setMessages((prev) => prev.filter(msg => msg.id !== userMessageId && msg.id !== assistantMessageId));
+      await api.streamChatWithHistory(
+        messagesToSend,
+        (chunk: string) => {
+          fullResponse += chunk;
+          // Update ONLY the assistant message - check both ID and role to be safe
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantMessageId && msg.role === 'assistant'
+                ? { ...msg, content: fullResponse }
+                : msg
+            )
+          );
+        },
+        abortController.signal
+      );
+    } catch (err: any) {
+      // Don't show error if it was aborted by user
+      if (err.name === 'AbortError' || err.message === 'Request aborted') {
+        // Keep the partial response, just stop loading
+        console.log('Request cancelled by user');
+      } else {
+        console.error('AI chat error:', err);
+        // Remove both user and assistant messages on error so they can retry
+        setMessages((prev) => prev.filter(msg => msg.id !== userMessageId && msg.id !== assistantMessageId));
+      }
     } finally {
       setIsLoading(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -187,17 +211,24 @@ export function AI() {
               {isLoading && (
                 <div className="ai-chat__message ai-chat__message--assistant">
                   <div className="ai-chat__message-avatar">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                      <path d="M2 17l10 5 10-5" />
-                      <path d="M2 12l10 5 10-5" />
-                    </svg>
+                    <MdSmartToy size={24} />
                   </div>
                   <div className="ai-chat__message-content">
-                    <div className="ai-chat__typing-indicator">
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                    <div className="ai-chat__loading-container">
+                      <div className="ai-chat__typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                      <button
+                        className="ai-chat__cancel-button"
+                        onClick={handleCancel}
+                        aria-label="Cancel"
+                        title="Cancel response"
+                      >
+                        <MdClose size={16} />
+                        <span>Cancel</span>
+                      </button>
                     </div>
                   </div>
                 </div>
