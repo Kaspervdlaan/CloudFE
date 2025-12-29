@@ -37,7 +37,6 @@ export function Drive() {
     loading,
     error,
     loadFiles,
-    uploadFiles,
     createFolder,
     deleteFile,
     renameFile,
