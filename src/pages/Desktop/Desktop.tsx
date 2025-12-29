@@ -36,7 +36,7 @@ export function Desktop() {
       id: 'plex',
       name: 'Plex',
       icon: MdMovie,
-      path: '/plex',
+      path: 'https://plex.livingcloud.app',
       color: '#F59E0B',
     },
     {
