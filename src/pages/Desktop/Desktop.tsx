@@ -70,7 +70,12 @@ export function Desktop() {
   ];
 
   const handleAppClick = (path: string) => {
-    navigate(path);
+    // Check if path is an external URL
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      window.open(path, '_blank', 'noopener,noreferrer');
+    } else {
+      navigate(path);
+    }
   };
 
   useEffect(() => {
