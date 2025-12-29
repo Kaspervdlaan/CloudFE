@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdCloud, MdSmartToy, MdMovie, MdNote, MdEvent, MdHeadphones, MdSettings, MdPerson } from 'react-icons/md';
+import { MdCloud, MdSmartToy, MdMovie, MdNote, MdEvent, MdSettings, MdPerson } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import './_Desktop.scss';
 import { useAuth } from '../../contexts/AuthContext';
@@ -26,13 +26,6 @@ export function Desktop() {
       color: '#10B981',
     },
     {
-      id: 'calendar',
-      name: 'Calendar',
-      icon: MdEvent,
-      path: '/calendar',
-      color: '#F59E0B',
-    },
-    {
       id: 'plex',
       name: 'Plex',
       icon: MdMovie,
@@ -40,32 +33,32 @@ export function Desktop() {
       color: '#F59E0B',
     },
     {
-      id: 'music',
-      name: 'Music',
-      icon: MdHeadphones,
-      path: '/music',
-      color: '#F59E0B',
-    },
-    {
       id: 'blog',
       name: 'Blog',
       icon: MdNote,
-      path: '/blog',
-      color: '#F59E0B',
+      path: 'https://helpful-frangollo-dde9c8.netlify.app/',
+      color: '#8B5CF6',
+    },
+    {
+      id: 'calendar',
+      name: 'Calendar',
+      icon: MdEvent,
+      path: '/calendar',
+      color: '#808080',
     },
     {
       id: 'profile',
       name: 'Profile',
       icon: MdPerson,
       path: '/profile',
-      color: '#F59E0B',
+      color: '#808080',
     },
     {
       id: 'settings',
       name: 'Settings',
       icon: MdSettings,
       path: '/settings',
-      color: '#F59E0B',
+      color: '#808080',
     }
   ];
 

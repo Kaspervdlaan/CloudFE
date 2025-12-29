@@ -171,9 +171,7 @@ export function AI() {
           {messages.length === 0 ? (
             <div className="ai-chat__empty">
               <div className="ai-chat__empty-icon">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.5">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
+                <MdSmartToy size={64} />
               </div>
               <h2 className="ai-chat__empty-title">How can I help you today?</h2>
               <p className="ai-chat__empty-subtitle">Start a conversation with AI</p>
