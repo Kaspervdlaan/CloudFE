@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdCloud, MdSmartToy, MdMovie, MdNote, MdEvent, MdSettings, MdPerson } from 'react-icons/md';
+import { MdCloud, MdSmartToy, MdMovie, MdNote, MdSettings, MdPerson } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import './_Desktop.scss';
 import { useAuth } from '../../contexts/AuthContext';
@@ -10,6 +10,7 @@ export function Desktop() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [quote, setQuote] = useState<string | null>(null);
+  const isMobile = window.innerWidth < 768;
   const apps = [
     {
       id: 'drive',
@@ -38,13 +39,6 @@ export function Desktop() {
       icon: MdNote,
       path: 'https://helpful-frangollo-dde9c8.netlify.app/',
       color: '#8B5CF6',
-    },
-    {
-      id: 'calendar',
-      name: 'Calendar',
-      icon: MdEvent,
-      path: '/calendar',
-      color: '#808080',
     },
     {
       id: 'profile',
@@ -107,7 +101,7 @@ export function Desktop() {
                   aria-label={`Open ${app.name}`}
                 >
                   <div className="desktop__app-icon" style={{ color: app.color }}>
-                    <Icon size={32} />
+                    <Icon size={isMobile ? 32 : 48} />
                   </div>
                   <span className="desktop__app-name">{app.name}</span>
                 </button>
