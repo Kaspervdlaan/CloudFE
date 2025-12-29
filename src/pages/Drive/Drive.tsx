@@ -25,7 +25,8 @@ import type { File } from '../../types/file';
 import type { User } from '../../types/auth';
 import { isImageFile, isVideoFile, isAudioFile, isTextFile, isPdfFile, isOfficeFile, isMarkdownFile, isCsvFile, isCodeFile } from '../../utils/fileUtils';
 import { api } from '../../utils/api';
-import { authApi } from '../../services/authApi';
+import { authApi, getToken } from '../../services/authApi';
+import { getApiUrl } from '../../config/api';
 import './_Drive.scss';
 import { useNavigate } from 'react-router-dom';
 
@@ -93,6 +94,8 @@ export function Drive() {
   const [folderToShare, setFolderToShare] = useState<File | null>(null);
   const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
   const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fabMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -170,10 +173,125 @@ export function Drive() {
     setSearchQuery(query);
   };
 
+  const uploadFilesWithProgress = async (fileList: FileList | globalThis.File[] | null, parentId?: string) => {
+    if (!fileList) {
+      return;
+    }
+    
+    setIsUploading(true);
+    setUploadProgress(0);
+    
+    try {
+      const targetParentId = parentId !== undefined ? parentId : (currentFolderId || undefined);
+      
+      const formData = new FormData();
+      // Ensure we always have an array
+      let fileArray: globalThis.File[];
+      
+      // Check if it's a FileList (has length and item() method or can be indexed)
+      if (fileList && typeof fileList === 'object' && 'length' in fileList && !Array.isArray(fileList)) {
+        // It's a FileList-like object, convert to array
+        fileArray = Array.from(fileList as FileList);
+      } else if (Array.isArray(fileList)) {
+        fileArray = fileList;
+      } else if (fileList instanceof File) {
+        // Single file object
+        fileArray = [fileList];
+      } else {
+        console.error('Invalid fileList type:', fileList);
+        setIsUploading(false);
+        setUploadProgress(0);
+        return;
+      }
+      
+      // Double-check we have a valid array
+      if (!Array.isArray(fileArray) || fileArray.length === 0) {
+        console.error('No valid files to upload');
+        setIsUploading(false);
+        setUploadProgress(0);
+        return;
+      }
+      
+      fileArray.forEach((file: globalThis.File) => {
+        formData.append('files', file);
+      });
+      
+      if (targetParentId) {
+        formData.append('parentId', targetParentId);
+      }
+      
+      return new Promise<File[]>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            setUploadProgress(percentComplete);
+          }
+        });
+        
+        xhr.addEventListener('load', async () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              const uploadedFiles = response.data;
+              
+              // Update allFiles cache
+              useFilesStore.setState((currentState) => ({
+                allFiles: [...currentState.allFiles, ...uploadedFiles],
+              }));
+              
+              // Reload files to show only files in current folder
+              await loadFiles(targetParentId);
+              
+              setIsUploading(false);
+              setUploadProgress(0);
+              resolve(uploadedFiles);
+            } catch (err) {
+              setIsUploading(false);
+              setUploadProgress(0);
+              reject(err);
+            }
+          } else {
+            setIsUploading(false);
+            setUploadProgress(0);
+            reject(new Error(`Upload failed with status ${xhr.status}`));
+          }
+        });
+        
+        xhr.addEventListener('error', () => {
+          setIsUploading(false);
+          setUploadProgress(0);
+          reject(new Error('Upload failed'));
+        });
+        
+        xhr.addEventListener('abort', () => {
+          setIsUploading(false);
+          setUploadProgress(0);
+          reject(new Error('Upload aborted'));
+        });
+        
+        const apiUrl = getApiUrl('files/upload');
+        xhr.open('POST', apiUrl);
+        
+        const token = getToken();
+        if (token) {
+          xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+        }
+        
+        xhr.send(formData);
+      });
+    } catch (err: any) {
+      setIsUploading(false);
+      setUploadProgress(0);
+      throw err;
+    }
+  };
+
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      uploadFiles(files);
+      uploadFilesWithProgress(files).catch(console.error);
     }
     // Reset input
     if (fileInputRef.current) {
@@ -355,7 +473,7 @@ export function Drive() {
   };
 
   const handleDropFiles = async (files: FileList, targetFolderId: string | undefined) => {
-    await uploadFiles(files, targetFolderId);
+    await uploadFilesWithProgress(files, targetFolderId).catch(console.error);
     setDragOverFolderId(null);
   };
 
@@ -573,10 +691,25 @@ export function Drive() {
           )} 
         </div>
 
+        {isUploading && (
+          <div className="drive__upload-progress">
+            <div className="drive__upload-progress-bar">
+              <div 
+                className="drive__upload-progress-fill" 
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+            <span className="drive__upload-progress-text">
+              Uploading... {Math.round(uploadProgress)}%
+            </span>
+          </div>
+        )}
+
         <input
           ref={fileInputRef}
           type="file"
           multiple
+          accept=""
           style={{ display: 'none' }}
           onChange={handleFileInputChange}
         />
@@ -664,11 +797,12 @@ export function Drive() {
                   <input
                     type="file"
                     multiple
+                    accept=""
                     style={{ display: 'none' }}
                     onChange={(e) => {
                       const files = e.target.files;
                       if (files && files.length > 0) {
-                        uploadFiles(files);
+                        uploadFilesWithProgress(files).catch(console.error);
                       }
                       // Reset input
                       e.target.value = '';

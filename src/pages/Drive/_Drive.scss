@@ -24,6 +24,78 @@
   }
 }
 
+.drive__upload-progress {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  background-color: $surface;
+  border-bottom: 1px solid $border;
+  z-index: 9;
+  position: sticky;
+  top: var(--header-height, 64px);
+
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-xs $spacing-sm;
+    gap: $spacing-sm;
+  }
+}
+
+.drive__upload-progress-bar {
+  flex: 1;
+  height: 8px;
+  background-color: $hover;
+  border-radius: $radius-full;
+  overflow: hidden;
+  position: relative;
+}
+
+.drive__upload-progress-fill {
+  height: 100%;
+  background: var(--accent-500);
+  border-radius: $radius-full;
+  transition: width 0.2s ease-out;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.drive__upload-progress-text {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  white-space: nowrap;
+  min-width: 100px;
+  text-align: right;
+
+  @media (max-width: $breakpoint-md) {
+    font-size: $font-size-xs;
+    min-width: 80px;
+  }
+}
+
 .drive__content {
   flex: 1;
   overflow-y: auto;
