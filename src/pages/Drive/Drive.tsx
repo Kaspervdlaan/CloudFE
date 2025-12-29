@@ -193,9 +193,9 @@ export function Drive() {
         fileArray = Array.from(fileList as FileList);
       } else if (Array.isArray(fileList)) {
         fileArray = fileList;
-      } else if (fileList instanceof File) {
-        // Single file object
-        fileArray = [fileList];
+      } else if (fileList && typeof fileList === 'object' && 'name' in fileList && 'size' in fileList && 'type' in fileList) {
+        // Single file object (check for File-like properties)
+        fileArray = [fileList as globalThis.File];
       } else {
         console.error('Invalid fileList type:', fileList);
         setIsUploading(false);
