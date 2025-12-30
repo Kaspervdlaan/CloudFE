@@ -3,6 +3,7 @@ import { Drive } from './pages/Drive/Drive';
 import { AI } from './pages/AI/AI';
 import { Desktop } from './pages/Desktop/Desktop';
 import { Profile } from './pages/Profile/Profile';
+import { Torrent } from './pages/Torrent/Torrent';
 import { Login } from './pages/Auth/Login';
 // import { Register } from './pages/Auth/Register';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -67,6 +68,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/torrent"
+        element={
+          <ProtectedRoute>
+            <Torrent />
           </ProtectedRoute>
         }
       />

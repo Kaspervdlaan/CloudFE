@@ -1,0 +1,145 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.torrent {
+  width: 100%;
+  padding: $spacing-lg;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-height, 64px));
+
+  &__container {
+    width: 100%;
+    max-width: 800px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-xl;
+    background: $surface;
+    border: 1px solid $border;
+    border-radius: $radius-lg;
+    margin-bottom: $spacing-xl;
+    text-align: center;
+  }
+
+  &__icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent-500);
+    color: $background;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $font-size-base;
+    color: $text-secondary;
+    margin: 0;
+    max-width: 600px;
+  }
+
+  &__form {
+    background: $surface;
+    border: 1px solid $border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+
+  &__input-group {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__label {
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+  }
+
+  &__input {
+    width: 100%;
+    padding: $spacing-md;
+    background: $background;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    color: $text-primary;
+    font-size: $font-size-base;
+    font-family: $font-family;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color $transition-base $ease-in-out, box-shadow $transition-base $ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent-500);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: $hover;
+    }
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+  }
+
+  &__hint {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin: 0;
+  }
+
+  &__submit-button {
+    align-self: flex-start;
+    min-width: 150px;
+  }
+
+  @media (max-width: $breakpoint-md) {
+    padding: $spacing-md;
+
+    &__header {
+      padding: $spacing-lg;
+    }
+
+    &__icon {
+      width: 64px;
+      height: 64px;
+
+      svg {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    &__title {
+      font-size: $font-size-2xl;
+    }
+
+    &__form {
+      padding: $spacing-lg;
+    }
+  }
+}
+
