@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { MdSend, MdPerson, MdSmartToy, MdClose } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { CodeBlock } from '../../components/common/CodeBlock/CodeBlock';
-import { parseCodeBlocks } from '../../utils/codeBlockParser';
+import { parseCodeBlocksStreaming } from '../../utils/codeBlockParser';
 import './_AI.scss';
 import { api } from '../../utils/api';
 import type { Message } from '../../types/ai';
@@ -127,7 +127,7 @@ export function AI() {
 
   // Component to render message content with code blocks
   function MessageContent({ content }: { content: string }) {
-    const parsed = parseCodeBlocks(content);
+    const parsed = parseCodeBlocksStreaming(content);
 
     return (
       <div className="ai-chat__message-text">

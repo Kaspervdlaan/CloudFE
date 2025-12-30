@@ -88,7 +88,7 @@
   padding: $spacing-sm;
   animation: fadeIn 0.3s ease-in;
   align-items: flex-end;
-  width: fit-content;
+  width: 100%;
   align-self: flex-start;
 
   &--user {
@@ -116,6 +116,7 @@
 
     .ai-chat__message-content {
       background: var(--background-secondary);
+      width: 100%;
       color: var(--text-primary);
       border-radius: $radius-lg $radius-lg $radius-lg $radius-sm;
     }
@@ -142,7 +143,6 @@
 .ai-chat__message-content {
   flex: 1;
   padding: .5rem 1rem;
-  max-width: 85%;
   word-wrap: break-word;
   line-height: 1.6;
 
