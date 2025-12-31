@@ -119,54 +119,13 @@ export function Torrent() {
     >
       <div className="torrent">
         <div className="torrent__container">
-          <div className="torrent__header">
-            <div className="torrent__icon">
-              <MdCloudDownload size={48} />
-            </div>
-            <h1 className="torrent__title">Torrent Downloads</h1>
-            <p className="torrent__subtitle">
-              Add and manage your torrent downloads
-            </p>
-          </div>
-
           {error && (
             <div className="torrent__error">
               {error}
             </div>
           )}
 
-          <form className="torrent__form" onSubmit={handleSubmit}>
-            <div className="torrent__input-group">
-              <label htmlFor="magnet-link" className="torrent__label">
-                Magnet Link
-              </label>
-              <textarea
-                id="magnet-link"
-                className="torrent__input"
-                value={magnetLink}
-                onChange={(e) => setMagnetLink(e.target.value)}
-                onPaste={handlePaste}
-                placeholder="magnet:?xt=urn:btih:..."
-                rows={4}
-                disabled={isSubmitting}
-                required
-              />
-              <p className="torrent__hint">
-                Paste your magnet link here. It should start with "magnet:?"
-              </p>
-            </div>
-
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={!magnetLink.trim() || isSubmitting}
-              className="torrent__submit-button"
-            >
-              {isSubmitting ? 'Submitting...' : 'Add Torrent'}
-            </Button>
-          </form>
-
-          <div className="torrent__downloads">
+<div className="torrent__downloads">
             <div className="torrent__downloads-header">
               <h2 className="torrent__downloads-title">Active Downloads</h2>
               <Button
@@ -219,6 +178,38 @@ export function Torrent() {
               </div>
             )}
           </div>
+
+          <form className="torrent__form" onSubmit={handleSubmit}>
+            <div className="torrent__input-group">
+              <label htmlFor="magnet-link" className="torrent__label">
+                Magnet Link
+              </label>
+              <textarea
+                id="magnet-link"
+                className="torrent__input"
+                value={magnetLink}
+                onChange={(e) => setMagnetLink(e.target.value)}
+                onPaste={handlePaste}
+                placeholder="magnet:?xt=urn:btih:..."
+                rows={4}
+                disabled={isSubmitting}
+                required
+              />
+              <p className="torrent__hint">
+                Paste your magnet link here. It should start with "magnet:?"
+              </p>
+            </div>
+
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={!magnetLink.trim() || isSubmitting}
+              className="torrent__submit-button"
+            >
+              {isSubmitting ? 'Submitting...' : 'Add Torrent'}
+            </Button>
+          </form>
+
         </div>
       </div>
     </Layout>

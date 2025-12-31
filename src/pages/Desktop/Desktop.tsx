@@ -92,22 +92,30 @@ export function Desktop() {
             )}
           </div>
           <div className="desktop__apps">
-            {apps.map((app) => {
-              const Icon = app.icon;
-              return (
-                <button
-                  key={app.id}
-                  className="desktop__app"
-                  onClick={() => handleAppClick(app.path)}
-                  aria-label={`Open ${app.name}`}
-                >
-                  <div className="desktop__app-icon" style={{ color: app.color }}>
-                    <Icon size={isMobile ? 32 : 48} />
-                  </div>
-                  <span className="desktop__app-name">{app.name}</span>
-                </button>
-              );
-            })}
+            {apps
+              .filter((app) => {
+                // Only show torrent app to admin users
+                if (app.id === 'torrent' && user?.role !== 'admin') {
+                  return false;
+                }
+                return true;
+              })
+              .map((app) => {
+                const Icon = app.icon;
+                return (
+                  <button
+                    key={app.id}
+                    className="desktop__app"
+                    onClick={() => handleAppClick(app.path)}
+                    aria-label={`Open ${app.name}`}
+                  >
+                    <div className="desktop__app-icon" style={{ color: app.color }}>
+                      <Icon size={isMobile ? 32 : 48} />
+                    </div>
+                    <span className="desktop__app-name">{app.name}</span>
+                  </button>
+                );
+              })}
           </div>
         </div>
       </div>
