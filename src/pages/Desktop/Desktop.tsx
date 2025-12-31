@@ -35,8 +35,8 @@ export function Desktop() {
       color: '#F59E0B',
     },
     {
-      id: 'torrent',
-      name: 'Torrent',
+      id: 'download',
+      name: 'Download',
       icon: IoMagnet,
       path: '/torrent',
       color: '#0000FF',
@@ -95,7 +95,7 @@ export function Desktop() {
             {apps
               .filter((app) => {
                 // Only show torrent app to admin users
-                if (app.id === 'torrent' && user?.role !== 'admin') {
+                if (app.id === 'download' && user?.role !== 'admin') {
                   return false;
                 }
                 return true;
