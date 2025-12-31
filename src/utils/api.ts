@@ -457,4 +457,33 @@ export const api = {
     });
     return handleResponse<void>(response);
   },
+
+  /**
+   * YouTube API methods
+   */
+  downloadYouTubeVideo: async (url: string, format: 'mp3' | 'mp4'): Promise<APIResponse<{ jobId: string; status: 'queued'; url: string; format: 'mp3' | 'mp4' }>> => {
+    const response = await fetch(getApiUrl('youtube/download'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getHeaders(),
+      },
+      body: JSON.stringify({ url, format }),
+    });
+    return handleResponse<{ jobId: string; status: 'queued'; url: string; format: 'mp3' | 'mp4' }>(response);
+  },
+
+  getYouTubeJobStatus: async (jobId: string): Promise<APIResponse<any>> => {
+    const response = await fetch(getApiUrl(`youtube/status/${jobId}`), {
+      headers: getHeaders(),
+    });
+    return handleResponse<any>(response);
+  },
+
+  listYouTubeJobs: async (): Promise<APIResponse<any[]>> => {
+    const response = await fetch(getApiUrl('youtube/list'), {
+      headers: getHeaders(),
+    });
+    return handleResponse<any[]>(response);
+  },
 };
