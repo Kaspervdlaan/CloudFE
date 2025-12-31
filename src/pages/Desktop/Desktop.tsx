@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdCloud, MdSmartToy, MdMovie, MdNote, MdSettings, MdPerson } from 'react-icons/md';
+import { MdCloud, MdSmartToy, MdMovie, MdNote, MdPerson} from 'react-icons/md';
+import { IoMagnet } from "react-icons/io5";
 import { Layout } from '../../components/layout/Layout/Layout';
 import './_Desktop.scss';
 import { useAuth } from '../../contexts/AuthContext';
@@ -34,6 +35,13 @@ export function Desktop() {
       color: '#F59E0B',
     },
     {
+      id: 'torrent',
+      name: 'Torrent',
+      icon: IoMagnet,
+      path: '/torrent',
+      color: '#0000FF',
+    },
+    {
       id: 'blog',
       name: 'Blog',
       icon: MdNote,
@@ -45,13 +53,6 @@ export function Desktop() {
       name: 'Profile',
       icon: MdPerson,
       path: '/profile',
-      color: '#808080',
-    },
-    {
-      id: 'settings',
-      name: 'Settings',
-      icon: MdSettings,
-      path: '/settings',
       color: '#808080',
     }
   ];
