@@ -427,4 +427,34 @@ export const api = {
     });
     return handleResponse<string>(response);
   },
+
+  /**
+   * Torrent API methods
+   */
+  addTorrent: async (magnetLink: string): Promise<APIResponse<{ gid: string }>> => {
+    const response = await fetch(getApiUrl('torrents/add'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getHeaders(),
+      },
+      body: JSON.stringify({ magnetLink }),
+    });
+    return handleResponse<{ gid: string }>(response);
+  },
+
+  getActiveDownloads: async (): Promise<APIResponse<any[]>> => {
+    const response = await fetch(getApiUrl('torrents/list?status=active'), {
+      headers: getHeaders(),
+    });
+    return handleResponse<any[]>(response);
+  },
+
+  stopDownload: async (gid: string): Promise<APIResponse<void>> => {
+    const response = await fetch(getApiUrl(`torrents/${gid}/pause`), {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    return handleResponse<void>(response);
+  },
 };
