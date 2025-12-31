@@ -125,7 +125,7 @@ export function Torrent() {
             </div>
           )}
 
-<div className="torrent__downloads">
+          <div className="torrent__downloads">
             <div className="torrent__downloads-header">
               <h2 className="torrent__downloads-title">Active Downloads</h2>
               <Button
