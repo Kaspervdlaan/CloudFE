@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { Button } from '../../components/common/Button/Button';
 import { api } from '../../utils/api';
-import { MdCloudDownload, MdStop, MdRefresh } from 'react-icons/md';
+import { MdStop, MdRefresh } from 'react-icons/md';
 import './_Torrent.scss';
 import type { TorrentDownload } from '../../types/torrent';
 
