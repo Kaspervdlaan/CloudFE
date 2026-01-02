@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { Button } from '../../components/common/Button/Button';
+import { DownloadList } from '../../components/files/DownloadList/DownloadList';
 import { api } from '../../utils/api';
-import { MdStop, MdRefresh } from 'react-icons/md';
 import './_Torrent.scss';
 import type { TorrentDownload } from '../../types/torrent';
 import type { YouTubeJob } from '../../types/youtube';
@@ -140,23 +140,9 @@ export function Torrent() {
     setInputUrl(pastedText);
   };
 
-  const formatBytes = (bytes?: number): string => {
-    if (!bytes || bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-  };
-
-  const formatSpeed = (bytesPerSec?: number): string => {
-    if (!bytesPerSec) return '0 B/s';
-    return formatBytes(bytesPerSec) + '/s';
-  };
-
-  const getProgressPercentage = (download?: TorrentDownload): number => {
-    if (!download || !download.totalLength || download.totalLength === 0) return 0;
-    const completed = download.completedLength || 0;
-    return Math.round((completed / download.totalLength) * 100);
+  const handleRefresh = () => {
+    loadActiveDownloads();
+    loadYouTubeJobs();
   };
 
   return (
@@ -177,8 +163,8 @@ export function Torrent() {
           )}
 
           <div className="torrent__sections">
-            {/* Torrent Section */}
-            <div className="torrent__section">
+            {/* Form Section */}
+            <div className="torrent__form-section">
               <form className="torrent__form" onSubmit={handleSubmit}>
                 <h3 className="torrent__form-title">Add Download</h3>
                 <div className="torrent__input-group">
@@ -235,123 +221,18 @@ export function Torrent() {
                       : 'Add Torrent'}
                 </Button>
               </form>
-
-              <div className="torrent__downloads">
-                <div className="torrent__downloads-header">
-                  <h2 className="torrent__downloads-title">Active Downloads</h2>
-                  <Button
-                    variant="ghost"
-                    onClick={loadActiveDownloads}
-                    disabled={isLoading}
-                    className="torrent__refresh-button"
-                  >
-                    <MdRefresh size={20} />
-                    Refresh
-                  </Button>
-                </div>
-
-                {isLoading && activeDownloads.length === 0 ? (
-                  <div className="torrent__loading">Loading downloads...</div>
-                ) : activeDownloads.length === 0 ? (
-                  <div className="torrent__empty">No active downloads</div>
-                ) : (
-                  <div className="torrent__downloads-list">
-                    {activeDownloads.map((download) => (
-                      <div key={download.gid} className="torrent__download-item">
-                        <div className="torrent__download-info">
-                          <div className="torrent__download-name">
-                            {download.name || download.gid}
-                          </div>
-                          <div className="torrent__download-details">
-                            <span>{getProgressPercentage(download)}%</span>
-                            <span>•</span>
-                            <span>{formatSpeed(download.downloadSpeed)}</span>
-                            <span>•</span>
-                            <span>{formatBytes(download.completedLength)} / {formatBytes(download.totalLength)}</span>
-                          </div>
-                          <div className="torrent__download-progress">
-                            <div 
-                              className="torrent__download-progress-bar"
-                              style={{ width: `${getProgressPercentage(download)}%` }}
-                            />
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          onClick={() => handleStopDownload(download.gid)}
-                          className="torrent__stop-button"
-                        >
-                          <MdStop size={20} />
-                          Stop
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
 
-            {/* YouTube Section */}
-            <div className="torrent__section">
-              <div className="torrent__downloads">
-                <div className="torrent__downloads-header">
-                  <h2 className="torrent__downloads-title">YouTube Downloads</h2>
-                  <Button
-                    variant="ghost"
-                    onClick={loadYouTubeJobs}
-                    disabled={isLoadingYouTube}
-                    className="torrent__refresh-button"
-                  >
-                    <MdRefresh size={20} />
-                    Refresh
-                  </Button>
-                </div>
-
-                {isLoadingYouTube && youtubeJobs.length === 0 ? (
-                  <div className="torrent__loading">Loading YouTube jobs...</div>
-                ) : youtubeJobs.length === 0 ? (
-                  <div className="torrent__empty">No YouTube downloads</div>
-                ) : (
-                  <div className="torrent__downloads-list">
-                    {youtubeJobs.map((job) => (
-                      <div key={job.jobId} className="torrent__download-item">
-                        <div className="torrent__download-info">
-                          <div className="torrent__download-name">
-                            {job.filename || job.url}
-                          </div>
-                          <div className="torrent__download-details">
-                            <span className={`torrent__status torrent__status--${job.status}`}>
-                              {job.status}
-                            </span>
-                            <span>•</span>
-                            <span>{job.format.toUpperCase()}</span>
-                            {job.progress !== undefined && (
-                              <>
-                                <span>•</span>
-                                <span>{job.progress}%</span>
-                              </>
-                            )}
-                            {job.error && (
-                              <>
-                                <span>•</span>
-                                <span className="torrent__error-text">{job.error}</span>
-                              </>
-                            )}
-                          </div>
-                          {job.progress !== undefined && job.progress > 0 && (
-                            <div className="torrent__download-progress">
-                              <div 
-                                className="torrent__download-progress-bar"
-                                style={{ width: `${job.progress}%` }}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+            {/* Unified Downloads List */}
+            <div className="torrent__downloads-section">
+              <DownloadList
+                torrentDownloads={activeDownloads}
+                youtubeJobs={youtubeJobs}
+                isLoadingTorrents={isLoading}
+                isLoadingYouTube={isLoadingYouTube}
+                onRefresh={handleRefresh}
+                onStopTorrent={handleStopDownload}
+              />
             </div>
           </div>
 

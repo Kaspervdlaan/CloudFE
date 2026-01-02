@@ -43,7 +43,7 @@
   &__sections {
     display: flex;
     gap: $spacing-xl;
-    flex-direction: column;
+    flex-direction: row;
     margin-bottom: $spacing-xl;
 
     @media (max-width: $breakpoint-md) {
@@ -51,15 +51,14 @@
     }
   }
 
-  &__section {
-    display: flex;
-    gap: $spacing-lg;
-    align-items: flex-start;
+  &__form-section {
     flex: 1;
+    min-width: 0;
+  }
 
-    @media (max-width: $breakpoint-md) {
-      flex-direction: column;
-    }
+  &__downloads-section {
+    flex: 1;
+    min-width: 0;
   }
 
   &__form {

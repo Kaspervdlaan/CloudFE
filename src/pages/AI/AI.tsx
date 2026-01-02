@@ -229,7 +229,7 @@ export function AI() {
             onSubmit={handleInputSubmit}
             onCancel={handleCancel}
             isLoading={isLoading}
-            placeholder="Message AI..."
+            placeholder="Ask Markov..."
             autoFocus
           />
         </div>

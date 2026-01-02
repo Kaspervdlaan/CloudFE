@@ -97,14 +97,11 @@ export function Desktop() {
               <p className="desktop__container-subtitle">Fetching your daily quote...</p>
             )}
           </div>
-          <div className="desktop__markov-input-wrapper">
             <AIInput
               onSubmit={handleMarkovSubmit}
-              placeholder="ask markov"
+              placeholder="Ask Markov..."
               showFooter={false}
-              className="desktop__markov-input"
             />
-          </div>
           <div className="desktop__apps">
             {apps
               .filter((app) => {

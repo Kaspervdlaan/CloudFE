@@ -17,7 +17,7 @@ export function AIInput({
   onSubmit,
   onCancel,
   isLoading = false,
-  placeholder = 'Message AI...',
+  placeholder = 'Ask Markov...',
   disabled = false,
   className = '',
   showFooter = true,
