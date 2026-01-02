@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdCloud, MdSmartToy, MdMovie, MdNote, MdPerson} from 'react-icons/md';
+import { MdCloud, MdSmartToy, MdMovie, MdNote, MdPerson } from 'react-icons/md';
 import { IoMagnet } from "react-icons/io5";
 import { Layout } from '../../components/layout/Layout/Layout';
+import { AIInput } from '../../components/common/AIInput/AIInput';
 import './_Desktop.scss';
 import { useAuth } from '../../contexts/AuthContext';
 import { getTimeBasedGreeting, randomDesktopQuote } from '../../utils/desktop';
@@ -66,6 +67,11 @@ export function Desktop() {
     }
   };
 
+  const handleMarkovSubmit = (message: string) => {
+    const encodedPrompt = encodeURIComponent(message);
+    navigate(`/ai?prompt=${encodedPrompt}`);
+  };
+
   useEffect(() => {
     randomDesktopQuote().then(quote => {
       setQuote(quote);
@@ -91,6 +97,15 @@ export function Desktop() {
               <p className="desktop__container-subtitle">Fetching your daily quote...</p>
             )}
           </div>
+          <div className="desktop__markov-input-wrapper">
+            <AIInput
+              onSubmit={handleMarkovSubmit}
+              placeholder="ask markov"
+              showFooter={false}
+              className="desktop__markov-input"
+            />
+          </div>
+
           <div className="desktop__apps">
             {apps
               .filter((app) => {

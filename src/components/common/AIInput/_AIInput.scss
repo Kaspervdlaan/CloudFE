@@ -1,0 +1,124 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.ai-input {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+
+  &__wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    background: var(--background-secondary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 0, 0, 0), 0.05);
+    border-radius: $radius-lg;
+    padding: 0.75rem;
+    transition: all 0.2s ease;
+
+    &:focus-within {
+      box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 0, 0, 0), 0.25);
+    }
+  }
+
+  &__textarea {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    max-height: 200px;
+    overflow-y: auto;
+    line-height: 1.5;
+
+    &::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+  }
+
+  &__send-button {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-md;
+    border: none;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover:not(:disabled) {
+      background: var(--primary-color-dark, var(--primary-color));
+      transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__cancel-button {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-md;
+    border: none;
+    background: $primary-400;
+    color: $text-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      background: $primary-500;
+      color: $accent-500;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  &__footer {
+    margin-top: 0.5rem;
+    padding: 0 0.75rem;
+  }
+
+  &__hint {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+}
+

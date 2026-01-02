@@ -8,18 +8,40 @@ import type { TorrentDownload } from '../../types/torrent';
 import type { YouTubeJob } from '../../types/youtube';
 
 export function Torrent() {
-  const [magnetLink, setMagnetLink] = useState('');
+  const [inputUrl, setInputUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeDownloads, setActiveDownloads] = useState<TorrentDownload[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // YouTube download state
-  const [youtubeUrl, setYoutubeUrl] = useState('');
   const [youtubeFormat, setYoutubeFormat] = useState<'mp3' | 'mp4'>('mp4');
-  const [isSubmittingYouTube, setIsSubmittingYouTube] = useState(false);
   const [youtubeJobs, setYoutubeJobs] = useState<YouTubeJob[]>([]);
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
+  const [inputType, setInputType] = useState<'magnet' | 'youtube' | null>(null);
+
+  // Detect input type
+  const detectInputType = (url: string): 'magnet' | 'youtube' | null => {
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+    
+    if (trimmed.startsWith('magnet:?')) {
+      return 'magnet';
+    }
+    
+    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
+    if (youtubeRegex.test(trimmed)) {
+      return 'youtube';
+    }
+    
+    return null;
+  };
+
+  // Update input type when URL changes
+  useEffect(() => {
+    const type = detectInputType(inputUrl);
+    setInputType(type);
+  }, [inputUrl]);
 
   // Load active downloads
   const loadActiveDownloads = async () => {
@@ -64,13 +86,15 @@ export function Torrent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!magnetLink.trim()) {
+    if (!inputUrl.trim()) {
       return;
     }
 
-    // Validate magnet link format
-    if (!magnetLink.trim().startsWith('magnet:?')) {
-      setError('Please enter a valid magnet link (must start with magnet:?)');
+    const trimmedUrl = inputUrl.trim();
+    const detectedType = detectInputType(trimmedUrl);
+
+    if (!detectedType) {
+      setError('Please enter a valid magnet link or YouTube URL');
       return;
     }
 
@@ -78,17 +102,21 @@ export function Torrent() {
     setError(null);
 
     try {
-      const response = await api.addTorrent(magnetLink.trim());
-      console.log('Torrent added successfully. GID:', response.data.gid);
+      if (detectedType === 'magnet') {
+        const response = await api.addTorrent(trimmedUrl);
+        console.log('Torrent added successfully. GID:', response.data.gid);
+        await loadActiveDownloads();
+      } else if (detectedType === 'youtube') {
+        const response = await api.downloadYouTubeVideo(trimmedUrl, youtubeFormat);
+        console.log('YouTube download started. Job ID:', response.data.jobId);
+        await loadYouTubeJobs();
+      }
       
       // Clear the input after successful submission
-      setMagnetLink('');
-      
-      // Reload active downloads
-      await loadActiveDownloads();
+      setInputUrl('');
     } catch (err: any) {
-      console.error('Error submitting torrent:', err);
-      setError(err.message || 'Failed to submit torrent. Please try again.');
+      console.error('Error submitting download:', err);
+      setError(err.message || 'Failed to submit download. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -106,46 +134,10 @@ export function Torrent() {
     }
   };
 
-  const handleYouTubeSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!youtubeUrl.trim()) {
-      return;
-    }
-
-    // Basic YouTube URL validation
-    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
-    if (!youtubeRegex.test(youtubeUrl.trim())) {
-      setError('Please enter a valid YouTube URL');
-      return;
-    }
-
-    setIsSubmittingYouTube(true);
-    setError(null);
-
-    try {
-      const response = await api.downloadYouTubeVideo(youtubeUrl.trim(), youtubeFormat);
-      console.log('YouTube download started. Job ID:', response.data.jobId);
-      
-      // Clear the input after successful submission
-      setYoutubeUrl('');
-      
-      // Reload YouTube jobs
-      await loadYouTubeJobs();
-    } catch (err: any) {
-      console.error('Error submitting YouTube download:', err);
-      setError(err.message || 'Failed to submit YouTube download. Please try again.');
-    } finally {
-      setIsSubmittingYouTube(false);
-    }
-  };
-
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    // Auto-paste detection - could be enhanced
+    // Auto-paste detection
     const pastedText = e.clipboardData.getData('text');
-    if (pastedText.startsWith('magnet:?')) {
-      setMagnetLink(pastedText);
-    }
+    setInputUrl(pastedText);
   };
 
   const formatBytes = (bytes?: number): string => {
@@ -188,34 +180,59 @@ export function Torrent() {
             {/* Torrent Section */}
             <div className="torrent__section">
               <form className="torrent__form" onSubmit={handleSubmit}>
-                <h3 className="torrent__form-title">Add Torrent</h3>
+                <h3 className="torrent__form-title">Add Download</h3>
                 <div className="torrent__input-group">
-                  <label htmlFor="magnet-link" className="torrent__label">
-                    Magnet Link
+                  <label htmlFor="download-url" className="torrent__label">
+                    Magnet Link or YouTube URL
                   </label>
                   <textarea
-                    id="magnet-link"
+                    id="download-url"
                     className="torrent__input"
-                    value={magnetLink}
-                    onChange={(e) => setMagnetLink(e.target.value)}
+                    value={inputUrl}
+                    onChange={(e) => setInputUrl(e.target.value)}
                     onPaste={handlePaste}
-                    placeholder="magnet:?xt=urn:btih:..."
+                    placeholder="magnet:?xt=urn:btih:... or https://www.youtube.com/watch?v=..."
                     rows={3}
                     disabled={isSubmitting}
                     required
                   />
-                  {/* <p className="torrent__hint">
-                    Paste your magnet link here. It should start with "magnet:?"
-                  </p> */}
+                  {inputType === 'youtube' && (
+                    <div className="torrent__format-selector">
+                      <label className="torrent__format-label">
+                        <input
+                          type="radio"
+                          value="mp4"
+                          checked={youtubeFormat === 'mp4'}
+                          onChange={(e) => setYoutubeFormat(e.target.value as 'mp4')}
+                          disabled={isSubmitting}
+                        />
+                        <span>MP4 (Video)</span>
+                      </label>
+                      <label className="torrent__format-label">
+                        <input
+                          type="radio"
+                          value="mp3"
+                          checked={youtubeFormat === 'mp3'}
+                          onChange={(e) => setYoutubeFormat(e.target.value as 'mp3')}
+                          disabled={isSubmitting}
+                        />
+                        <span>MP3 (Audio)</span>
+                      </label>
+                    </div>
+                  )}
                 </div>
 
                 <Button
                   type="submit"
                   variant="primary"
-                  disabled={!magnetLink.trim() || isSubmitting}
+                  disabled={!inputUrl.trim() || isSubmitting}
                   className="torrent__submit-button"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Add Torrent'}
+                  {isSubmitting 
+                    ? 'Submitting...' 
+                    : inputType === 'youtube' 
+                      ? 'Download from YouTube' 
+                      : 'Add Torrent'}
                 </Button>
               </form>
 
@@ -276,59 +293,6 @@ export function Torrent() {
 
             {/* YouTube Section */}
             <div className="torrent__section">
-              <form className="torrent__form" onSubmit={handleYouTubeSubmit}>
-                <h3 className="torrent__form-title">Download from YouTube</h3>
-                <div className="torrent__input-group">
-                  <label htmlFor="youtube-url" className="torrent__label">
-                    YouTube URL
-                  </label>
-                  <input
-                    id="youtube-url"
-                    type="url"
-                    className="torrent__input torrent__input--text"
-                    value={youtubeUrl}
-                    onChange={(e) => setYoutubeUrl(e.target.value)}
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    disabled={isSubmittingYouTube}
-                    required
-                  />
-                  <div className="torrent__format-selector">
-                    <label className="torrent__format-label">
-                      <input
-                        type="radio"
-                        value="mp4"
-                        checked={youtubeFormat === 'mp4'}
-                        onChange={(e) => setYoutubeFormat(e.target.value as 'mp4')}
-                        disabled={isSubmittingYouTube}
-                      />
-                      <span>MP4 (Video)</span>
-                    </label>
-                    <label className="torrent__format-label">
-                      <input
-                        type="radio"
-                        value="mp3"
-                        checked={youtubeFormat === 'mp3'}
-                        onChange={(e) => setYoutubeFormat(e.target.value as 'mp3')}
-                        disabled={isSubmittingYouTube}
-                      />
-                      <span>MP3 (Audio)</span>
-                    </label>
-                  </div>
-                  {/* <p className="torrent__hint">
-                    Paste a YouTube URL to download as {youtubeFormat.toUpperCase()}
-                  </p> */}
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={!youtubeUrl.trim() || isSubmittingYouTube}
-                  className="torrent__submit-button"
-                >
-                  {isSubmittingYouTube ? 'Submitting...' : 'Download from YouTube'}
-                </Button>
-              </form>
-
               <div className="torrent__downloads">
                 <div className="torrent__downloads-header">
                   <h2 className="torrent__downloads-title">YouTube Downloads</h2>

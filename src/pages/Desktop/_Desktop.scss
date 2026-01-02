@@ -127,5 +127,41 @@
       font-size: $font-size-sm;
     }
   }
+
+  &__markov-input-wrapper {
+    width: 100%;
+    max-width: 600px;
+
+    .desktop__markov-input {
+      padding-top: 0;
+      border-top: none;
+
+      .ai-input__wrapper {
+        background: var(--background-secondary);
+        border: 1px solid var(--border-color);
+        padding: $spacing-sm;
+        box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 59, 130, 246), 0.05);
+        transition: all $transition-base $ease-out;
+        align-items: flex-end;
+
+        &:focus-within {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 59, 130, 246), 0.1);
+        }
+      }
+
+      .ai-input__textarea {
+        min-height: 40px;
+        max-height: 120px;
+        padding: 0.5rem 0.75rem;
+      }
+
+      .ai-input__send-button,
+      .ai-input__cancel-button {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  }
 }
 

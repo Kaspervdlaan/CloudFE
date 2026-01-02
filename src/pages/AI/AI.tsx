@@ -1,19 +1,21 @@
 import { useState, useRef, useEffect } from 'react';
-import { MdSend, MdPerson, MdSmartToy, MdClose } from 'react-icons/md';
+import { useSearchParams } from 'react-router-dom';
+import { MdPerson, MdSmartToy } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { CodeBlock } from '../../components/common/CodeBlock/CodeBlock';
+import { AIInput } from '../../components/common/AIInput/AIInput';
 import { parseCodeBlocksStreaming } from '../../utils/codeBlockParser';
 import './_AI.scss';
 import { api } from '../../utils/api';
 import type { Message } from '../../types/ai';
 
 export function AI() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const hasProcessedInitialPrompt = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -31,13 +33,9 @@ export function AI() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const submitMessage = async (messageContent: string) => {
+    if (!messageContent.trim() || isLoading) return;
 
-    // Store user message content before clearing input
-    const userMessageContent = input.trim();
-    setInput('');
     setIsLoading(true);
 
     // Create abort controller for cancellation
@@ -52,7 +50,7 @@ export function AI() {
     const userMessage: Message = {
       id: userMessageId,
       role: 'user',
-      content: userMessageContent,
+      content: messageContent.trim(),
       timestamp: new Date(),
     };
 
@@ -105,21 +103,24 @@ export function AI() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
+  const handleInputSubmit = async (messageContent: string) => {
+    await submitMessage(messageContent);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value);
-    // Auto-resize textarea
-    if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
-      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 200)}px`;
+  // Handle initial prompt from URL params
+  useEffect(() => {
+    const prompt = searchParams.get('prompt');
+    if (prompt && !hasProcessedInitialPrompt.current && !isLoading && messages.length === 0) {
+      hasProcessedInitialPrompt.current = true;
+      const decodedPrompt = decodeURIComponent(prompt);
+      // Clear the prompt from URL
+      setSearchParams({}, { replace: true });
+      // Submit the prompt
+      submitMessage(decodedPrompt);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, isLoading, messages.length]);
+
 
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [searchQuery, setSearchQuery] = useState('');
@@ -224,46 +225,13 @@ export function AI() {
             </div>
           )}
 
-          <form className="ai-chat__input-container" onSubmit={handleSubmit}>
-            <div className="ai-chat__input-wrapper">
-              <textarea
-                ref={inputRef}
-                className="ai-chat__input"
-                value={input}
-                autoFocus
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Message AI..."
-                rows={1}
-                disabled={isLoading}
-              />
-              {isLoading ? (
-                <button
-                  type="button"
-                  className="ai-chat__cancel-button"
-                  onClick={handleCancel}
-                  aria-label="Cancel"
-                  title="Cancel response"
-                >
-                  <MdClose size={20} />
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="ai-chat__send-button"
-                  disabled={!input.trim() || isLoading}
-                  aria-label="Send message"
-                >
-                  <MdSend size={20} />
-                </button>
-              )}
-            </div>
-            <div className="ai-chat__input-footer">
-              <p className="ai-chat__input-hint">
-                Press Enter to send, Shift+Enter for new line
-              </p>
-            </div>
-          </form>
+          <AIInput
+            onSubmit={handleInputSubmit}
+            onCancel={handleCancel}
+            isLoading={isLoading}
+            placeholder="Message AI..."
+            autoFocus
+          />
         </div>
       </div>
     </Layout>
