@@ -6,12 +6,13 @@ import { Layout } from '../../components/layout/Layout/Layout';
 import { AIInput } from '../../components/common/AIInput/AIInput';
 import './_Desktop.scss';
 import { useAuth } from '../../contexts/AuthContext';
-import { getTimeBasedGreeting, randomDesktopQuote } from '../../utils/desktop';
+import { getQuoteOfTheDay, getTimeBasedGreeting } from '../../utils/desktop';
 
 export function Desktop() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [quote, setQuote] = useState<string | null>(null);
+  const quoteToday = getQuoteOfTheDay();
+
   const isMobile = window.innerWidth < 768;
   const apps = [
     {
@@ -72,12 +73,6 @@ export function Desktop() {
     navigate(`/ai?prompt=${encodedPrompt}`);
   };
 
-  useEffect(() => {
-    randomDesktopQuote().then(quote => {
-      setQuote(quote);
-    });
-  }, []);
-
   return (
     <Layout
       onSearch={() => {}}
@@ -91,11 +86,9 @@ export function Desktop() {
         <div className="desktop__container">
           <div className="desktop__container-header">
             <h3 className="desktop__container-title">{getTimeBasedGreeting()}, {user?.name} !</h3>
-            {quote ? (
-              <p className="desktop__container-subtitle">{quote}</p>
-            ) : (
-              <p className="desktop__container-subtitle">Fetching your daily quote...</p>
-            )}
+            <p className="desktop__container-subtitle">
+              {quoteToday?.quote} - <i>{quoteToday?.author}</i>
+            </p>
           </div>
             <AIInput
               onSubmit={handleMarkovSubmit}
