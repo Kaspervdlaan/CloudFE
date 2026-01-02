@@ -58,9 +58,16 @@ export function AI() {
     conversationsRef.current = conversations;
   }, [conversations]);
 
-  // Load messages when conversation changes
+  // Keep messages in a ref to access latest value
+  const messagesRef = useRef(messages);
   useEffect(() => {
-    if (!isInitializedRef.current) return;
+    messagesRef.current = messages;
+  }, [messages]);
+
+  // Load messages when conversation changes (but skip if we're submitting)
+  const isSubmittingRef = useRef(false);
+  useEffect(() => {
+    if (!isInitializedRef.current || isSubmittingRef.current) return;
     
     if (currentConversationId) {
       // Use ref to get latest conversations without creating dependency
@@ -159,8 +166,9 @@ export function AI() {
       saveConversations(updated);
       return updated;
     });
+    
+    // Set conversation ID but don't set messages here - let submitMessage handle it
     setCurrentConversationId(newId);
-    setMessages([]);
     
     return newId;
   };
@@ -168,10 +176,15 @@ export function AI() {
   const submitMessage = async (messageContent: string) => {
     if (!messageContent.trim() || isLoading) return;
 
+    // Prevent conversation loading effect from interfering
+    isSubmittingRef.current = true;
+
     // Create new conversation if none exists
     let conversationId = currentConversationId;
     if (!conversationId) {
       conversationId = createNewConversation();
+      // When creating a new conversation, ensure messages are empty
+      setMessages([]);
     }
 
     setIsLoading(true);
@@ -200,12 +213,15 @@ export function AI() {
       timestamp: new Date(),
     };
 
+    // Get current messages from ref to avoid stale state
+    const currentMessages = messagesRef.current;
+    
     // Add both messages at once
-    const updatedMessages = [...messages, userMessage, assistantMessage];
+    const updatedMessages = [...currentMessages, userMessage, assistantMessage];
     setMessages(updatedMessages);
 
     // Update conversation title if this is the first message
-    if (messages.length === 0) {
+    if (currentMessages.length === 0) {
       const title = generateConversationTitle(messageContent.trim());
       setConversations(prev => {
         const conversation = prev.find(c => c.id === conversationId);
@@ -225,7 +241,7 @@ export function AI() {
       let fullResponse = '';
       
       // Only send messages up to the user message (not the empty assistant placeholder)
-      const messagesToSend = [...messages, userMessage];
+      const messagesToSend = [...currentMessages, userMessage];
       
       await api.streamChatWithHistory(
         messagesToSend,
@@ -255,6 +271,7 @@ export function AI() {
     } finally {
       setIsLoading(false);
       abortControllerRef.current = null;
+      isSubmittingRef.current = false;
     }
   };
 
