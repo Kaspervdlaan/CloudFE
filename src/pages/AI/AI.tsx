@@ -4,18 +4,28 @@ import { MdPerson, MdSmartToy } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { CodeBlock } from '../../components/common/CodeBlock/CodeBlock';
 import { AIInput } from '../../components/common/AIInput/AIInput';
+import { ConversationsSidebar } from '../../components/files/ConversationsSidebar/ConversationsSidebar';
 import { parseCodeBlocksStreaming } from '../../utils/codeBlockParser';
+import {
+  getConversations,
+  saveConversations,
+  generateConversationTitle,
+} from '../../utils/conversationStorage';
 import './_AI.scss';
 import { api } from '../../utils/api';
-import type { Message } from '../../types/ai';
+import type { Message, Conversation } from '../../types/ai';
 
 export function AI() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const hasProcessedInitialPrompt = useRef(false);
+  const isInitializedRef = useRef(false);
+  const isSavingRef = useRef(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -25,6 +35,107 @@ export function AI() {
     scrollToBottom();
   }, [messages]);
 
+  // Load conversations from localStorage on mount
+  useEffect(() => {
+    if (!isInitializedRef.current) {
+      const loadedConversations = getConversations();
+      setConversations(loadedConversations);
+      
+      // Select the most recent conversation if available
+      if (loadedConversations.length > 0) {
+        const mostRecent = loadedConversations[0];
+        setCurrentConversationId(mostRecent.id);
+        setMessages(mostRecent.messages);
+      }
+      
+      isInitializedRef.current = true;
+    }
+  }, []);
+
+  // Keep conversations in a ref to access latest value without dependency
+  const conversationsRef = useRef(conversations);
+  useEffect(() => {
+    conversationsRef.current = conversations;
+  }, [conversations]);
+
+  // Load messages when conversation changes
+  useEffect(() => {
+    if (!isInitializedRef.current) return;
+    
+    if (currentConversationId) {
+      // Use ref to get latest conversations without creating dependency
+      const conversation = conversationsRef.current.find(c => c.id === currentConversationId);
+      if (conversation) {
+        isSavingRef.current = true;
+        setMessages(conversation.messages);
+        // Reset flag after messages are set
+        setTimeout(() => {
+          isSavingRef.current = false;
+        }, 50);
+      }
+    } else {
+      setMessages([]);
+    }
+    // Only depend on currentConversationId, not conversations
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentConversationId]);
+
+  // Save conversation whenever messages change (but only if we're not loading from storage)
+  useEffect(() => {
+    if (!isInitializedRef.current || !currentConversationId || messages.length === 0 || isSavingRef.current) return;
+
+    setConversations(prev => {
+      const conversation = prev.find(c => c.id === currentConversationId);
+      if (!conversation) return prev;
+
+      // Check if messages actually changed by comparing IDs and content
+      const currentMessageIds = conversation.messages.map(m => m.id).join(',');
+      const newMessageIds = messages.map(m => m.id).join(',');
+      
+      // If IDs are different, messages definitely changed
+      if (currentMessageIds !== newMessageIds) {
+        const updatedConversation: Conversation = {
+          ...conversation,
+          messages,
+          updatedAt: new Date().toISOString(),
+        };
+        const updated = prev.map(c => c.id === currentConversationId ? updatedConversation : c);
+        const sorted = updated.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        saveConversations(sorted);
+        return sorted;
+      }
+
+      // If IDs are the same, check if content changed (e.g., during streaming)
+      const messagesChanged = conversation.messages.length !== messages.length ||
+        conversation.messages.some((msg, idx) => {
+          const newMsg = messages[idx];
+          return !newMsg || msg.id !== newMsg.id || msg.content !== newMsg.content;
+        });
+
+      if (!messagesChanged) {
+        // Messages haven't changed, don't save
+        return prev;
+      }
+
+      const updatedConversation: Conversation = {
+        ...conversation,
+        messages,
+        updatedAt: new Date().toISOString(),
+      };
+
+      // Update in state first
+      const updated = prev.map(c => c.id === currentConversationId ? updatedConversation : c);
+      // Sort by updatedAt (newest first)
+      const sorted = updated.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      
+      // Save to localStorage using the updated array
+      saveConversations(sorted);
+      
+      return sorted;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, currentConversationId]);
+
   const handleCancel = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -33,8 +144,35 @@ export function AI() {
     }
   };
 
+  const createNewConversation = (): string => {
+    const newId = `conv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const newConversation: Conversation = {
+      id: newId,
+      title: 'New Conversation',
+      messages: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    
+    setConversations(prev => {
+      const updated = [newConversation, ...prev];
+      saveConversations(updated);
+      return updated;
+    });
+    setCurrentConversationId(newId);
+    setMessages([]);
+    
+    return newId;
+  };
+
   const submitMessage = async (messageContent: string) => {
     if (!messageContent.trim() || isLoading) return;
+
+    // Create new conversation if none exists
+    let conversationId = currentConversationId;
+    if (!conversationId) {
+      conversationId = createNewConversation();
+    }
 
     setIsLoading(true);
 
@@ -65,6 +203,23 @@ export function AI() {
     // Add both messages at once
     const updatedMessages = [...messages, userMessage, assistantMessage];
     setMessages(updatedMessages);
+
+    // Update conversation title if this is the first message
+    if (messages.length === 0) {
+      const title = generateConversationTitle(messageContent.trim());
+      setConversations(prev => {
+        const conversation = prev.find(c => c.id === conversationId);
+        if (!conversation) return prev;
+        
+        const updatedConversation: Conversation = {
+          ...conversation,
+          title,
+        };
+        const updated = prev.map(c => c.id === conversationId ? updatedConversation : c);
+        saveConversations(updated);
+        return updated;
+      });
+    }
 
     try {
       let fullResponse = '';
@@ -107,24 +262,48 @@ export function AI() {
     await submitMessage(messageContent);
   };
 
+  const handleSelectConversation = (conversationId: string) => {
+    setCurrentConversationId(conversationId);
+  };
+
+  const handleDeleteConversation = (conversationId: string) => {
+    setConversations(prev => {
+      const filtered = prev.filter(c => c.id !== conversationId);
+      saveConversations(filtered);
+      
+      if (currentConversationId === conversationId) {
+        if (filtered.length > 0) {
+          setCurrentConversationId(filtered[0].id);
+        } else {
+          setCurrentConversationId(null);
+          setMessages([]);
+        }
+      }
+      
+      return filtered;
+    });
+  };
+
+  const handleNewConversation = () => {
+    createNewConversation();
+  };
+
   // Handle initial prompt from URL params
   useEffect(() => {
     const prompt = searchParams.get('prompt');
-    if (prompt && !hasProcessedInitialPrompt.current && !isLoading && messages.length === 0) {
+    if (prompt && !hasProcessedInitialPrompt.current && isInitializedRef.current && !isLoading) {
       hasProcessedInitialPrompt.current = true;
       const decodedPrompt = decodeURIComponent(prompt);
       // Clear the prompt from URL
       setSearchParams({}, { replace: true });
-      // Submit the prompt
+      // Submit the prompt (will create new conversation if needed)
       submitMessage(decodedPrompt);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, isLoading, messages.length]);
+  }, [searchParams, isLoading, isInitializedRef.current]);
 
 
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-  const [searchQuery, setSearchQuery] = useState('');
-  console.log('searchQuery', searchQuery);
 
   // Component to render message content with code blocks
   function MessageContent({ content }: { content: string }) {
@@ -160,7 +339,7 @@ export function AI() {
 
   return (
     <Layout
-      onSearch={setSearchQuery}
+      onSearch={() => {}}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       showSearch={false}
@@ -168,6 +347,13 @@ export function AI() {
       showSidebar={false}
     >
       <div className="ai-chat">
+        <ConversationsSidebar
+          conversations={conversations}
+          currentConversationId={currentConversationId}
+          onSelectConversation={handleSelectConversation}
+          onDeleteConversation={handleDeleteConversation}
+          onNewConversation={handleNewConversation}
+        />
         <div className="ai-chat__container">
           {messages.length === 0 ? (
             <div className="ai-chat__empty">

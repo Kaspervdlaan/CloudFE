@@ -3,7 +3,7 @@
 
 .ai-chat {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
   width: 100%;
   background: var(--background-primary);
@@ -13,10 +13,10 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
+  flex: 1;
   width: 100%;
   padding: 2rem 1rem;
+  overflow: hidden;
 }
 
 .ai-chat__empty {
