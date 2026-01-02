@@ -26,7 +26,7 @@
     align-items: center;
     justify-content: center;
     gap: $spacing-2xl;
-    padding-bottom: $spacing-2xl;
+    padding-bottom: $spacing-md;
 
     @media (max-width: $breakpoint-md) {
       gap: $spacing-lg;

@@ -105,7 +105,6 @@ export function Desktop() {
               className="desktop__markov-input"
             />
           </div>
-
           <div className="desktop__apps">
             {apps
               .filter((app) => {
