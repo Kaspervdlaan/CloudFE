@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdCloud, MdSmartToy, MdMovie, MdNote, MdPerson } from 'react-icons/md';
 import { IoMagnet } from "react-icons/io5";

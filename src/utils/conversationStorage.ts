@@ -1,4 +1,4 @@
-import type { Message, Conversation } from '../types/ai';
+import type { Conversation } from '../types/ai';
 
 const STORAGE_KEY = 'ai-conversations';
 
@@ -14,20 +14,6 @@ function serializeConversation(conversation: Conversation): string {
     })),
   };
   return JSON.stringify(serialized);
-}
-
-/**
- * Deserialize conversations from localStorage (strings to Date objects)
- */
-function deserializeConversation(data: string): Conversation {
-  const parsed = JSON.parse(data);
-  return {
-    ...parsed,
-    messages: parsed.messages.map((msg: any) => ({
-      ...msg,
-      timestamp: new Date(msg.timestamp),
-    })),
-  };
 }
 
 /**
