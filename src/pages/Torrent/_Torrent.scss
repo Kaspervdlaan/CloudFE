@@ -56,6 +56,46 @@
     min-width: 0;
   }
 
+  &__tabs {
+    display: flex;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-lg;
+    border-bottom: 1px solid $border;
+  }
+
+  &__tab {
+    padding: $spacing-md $spacing-lg;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: $text-secondary;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: all $transition-base $ease-in-out;
+    position: relative;
+    top: 1px;
+
+    &:hover {
+      color: $text-primary;
+      background: $hover;
+    }
+
+    &--active {
+      color: var(--accent-500);
+      border-bottom-color: var(--accent-500);
+      background: transparent;
+
+      &:hover {
+        color: var(--accent-500);
+      }
+    }
+  }
+
+  &__search-component {
+    margin-top: $spacing-md;
+  }
+
   &__downloads-section {
     flex: 1;
     min-width: 0;

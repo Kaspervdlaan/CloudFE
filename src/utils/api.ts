@@ -1,6 +1,7 @@
 import type { File, Folder, CreateFolderRequest } from '../types/file';
 import type { APIResponse, APIError } from '../types/api';
 import type { Message } from '../types/ai';
+import type { TorrentSearchResponse } from '../types/torrent';
 import { getApiUrl } from '../config/api';
 import { getToken } from '../services/authApi';
 
@@ -456,6 +457,20 @@ export const api = {
       headers: getHeaders(),
     });
     return handleResponse<void>(response);
+  },
+
+  searchTorrents: async (query: string, category?: string, limit: number = 50): Promise<APIResponse<TorrentSearchResponse>> => {
+    const params = new URLSearchParams({ q: query });
+    if (category) {
+      params.append('category', category);
+    }
+    if (limit !== 50) {
+      params.append('limit', limit.toString());
+    }
+    const response = await fetch(getApiUrl(`torrents/search?${params.toString()}`), {
+      headers: getHeaders(),
+    });
+    return handleResponse<TorrentSearchResponse>(response);
   },
 
   /**

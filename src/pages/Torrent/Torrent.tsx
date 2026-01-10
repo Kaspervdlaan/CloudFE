@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { Button } from '../../components/common/Button/Button';
 import { DownloadList } from '../../components/files/DownloadList/DownloadList';
+import { TorrentSearch } from '../../components/files/TorrentSearch/TorrentSearch';
 import { api } from '../../utils/api';
 import './_Torrent.scss';
 import type { TorrentDownload } from '../../types/torrent';
@@ -19,6 +20,7 @@ export function Torrent() {
   const [youtubeJobs, setYoutubeJobs] = useState<YouTubeJob[]>([]);
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
   const [inputType, setInputType] = useState<'magnet' | 'youtube' | null>(null);
+  const [activeTab, setActiveTab] = useState<'add' | 'search'>('add');
 
   // Detect input type
   const detectInputType = (url: string): 'magnet' | 'youtube' | null => {
@@ -145,6 +147,19 @@ export function Torrent() {
     loadYouTubeJobs();
   };
 
+  const handleAddTorrentFromSearch = async (magnetLink: string) => {
+    try {
+      const response = await api.addTorrent(magnetLink);
+      console.log('Torrent added successfully from search. GID:', response.data.gid);
+      await loadActiveDownloads();
+      setError(null);
+    } catch (err: any) {
+      console.error('Error adding torrent from search:', err);
+      setError(err.message || 'Failed to add torrent. Please try again.');
+      throw err;
+    }
+  };
+
   return (
     <Layout
       onSearch={() => {}}
@@ -165,62 +180,89 @@ export function Torrent() {
           <div className="torrent__sections">
             {/* Form Section */}
             <div className="torrent__form-section">
-              <form className="torrent__form" onSubmit={handleSubmit}>
-                <h3 className="torrent__form-title">Add Download</h3>
-                <div className="torrent__input-group">
-                  <label htmlFor="download-url" className="torrent__label">
-                    Magnet Link or YouTube URL
-                  </label>
-                  <textarea
-                    id="download-url"
-                    className="torrent__input"
-                    value={inputUrl}
-                    onChange={(e) => setInputUrl(e.target.value)}
-                    onPaste={handlePaste}
-                    placeholder="magnet:?xt=urn:btih:... or https://www.youtube.com/watch?v=..."
-                    rows={3}
-                    disabled={isSubmitting}
-                    required
-                  />
-                  {inputType === 'youtube' && (
-                    <div className="torrent__format-selector">
-                      <label className="torrent__format-label">
-                        <input
-                          type="radio"
-                          value="mp4"
-                          checked={youtubeFormat === 'mp4'}
-                          onChange={(e) => setYoutubeFormat(e.target.value as 'mp4')}
-                          disabled={isSubmitting}
-                        />
-                        <span>MP4 (Video)</span>
-                      </label>
-                      <label className="torrent__format-label">
-                        <input
-                          type="radio"
-                          value="mp3"
-                          checked={youtubeFormat === 'mp3'}
-                          onChange={(e) => setYoutubeFormat(e.target.value as 'mp3')}
-                          disabled={isSubmitting}
-                        />
-                        <span>MP3 (Audio)</span>
-                      </label>
-                    </div>
-                  )}
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={!inputUrl.trim() || isSubmitting}
-                  className="torrent__submit-button"
+              <div className="torrent__tabs">
+                <button
+                  type="button"
+                  className={`torrent__tab ${activeTab === 'add' ? 'torrent__tab--active' : ''}`}
+                  onClick={() => setActiveTab('add')}
                 >
-                  {isSubmitting 
-                    ? 'Submitting...' 
-                    : inputType === 'youtube' 
-                      ? 'Download from YouTube' 
-                      : 'Add Torrent'}
-                </Button>
-              </form>
+                  Add Download
+                </button>
+                <button
+                  type="button"
+                  className={`torrent__tab ${activeTab === 'search' ? 'torrent__tab--active' : ''}`}
+                  onClick={() => setActiveTab('search')}
+                >
+                  Search Torrents
+                </button>
+              </div>
+
+              {activeTab === 'add' ? (
+                <form className="torrent__form" onSubmit={handleSubmit}>
+                  <h3 className="torrent__form-title">Add Download</h3>
+                  <div className="torrent__input-group">
+                    <label htmlFor="download-url" className="torrent__label">
+                      Magnet Link or YouTube URL
+                    </label>
+                    <textarea
+                      id="download-url"
+                      className="torrent__input"
+                      value={inputUrl}
+                      onChange={(e) => setInputUrl(e.target.value)}
+                      onPaste={handlePaste}
+                      placeholder="magnet:?xt=urn:btih:... or https://www.youtube.com/watch?v=..."
+                      rows={3}
+                      disabled={isSubmitting}
+                      required
+                    />
+                    {inputType === 'youtube' && (
+                      <div className="torrent__format-selector">
+                        <label className="torrent__format-label">
+                          <input
+                            type="radio"
+                            value="mp4"
+                            checked={youtubeFormat === 'mp4'}
+                            onChange={(e) => setYoutubeFormat(e.target.value as 'mp4')}
+                            disabled={isSubmitting}
+                          />
+                          <span>MP4 (Video)</span>
+                        </label>
+                        <label className="torrent__format-label">
+                          <input
+                            type="radio"
+                            value="mp3"
+                            checked={youtubeFormat === 'mp3'}
+                            onChange={(e) => setYoutubeFormat(e.target.value as 'mp3')}
+                            disabled={isSubmitting}
+                          />
+                          <span>MP3 (Audio)</span>
+                        </label>
+                      </div>
+                    )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={!inputUrl.trim() || isSubmitting}
+                    className="torrent__submit-button"
+                  >
+                    {isSubmitting 
+                      ? 'Submitting...' 
+                      : inputType === 'youtube' 
+                        ? 'Download from YouTube' 
+                        : 'Add Torrent'}
+                  </Button>
+                </form>
+              ) : (
+                <div className="torrent__form">
+                  <h3 className="torrent__form-title">Search Torrents</h3>
+                  <TorrentSearch
+                    onAddTorrent={handleAddTorrentFromSearch}
+                    className="torrent__search-component"
+                  />
+                </div>
+              )}
             </div>
 
             {/* Unified Downloads List */}
