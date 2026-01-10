@@ -171,15 +171,15 @@ export function TorrentSearch({
                   
                   <div className="torrent-search__result-meta">
                     <span className="torrent-search__meta-item">
-                      <MdStorage size={14} />
+                      <MdStorage size={12} />
                       {torrent.sizeFormatted}
                     </span>
                     <span className="torrent-search__meta-item torrent-search__seeders">
-                      <MdArrowUpward size={14} />
+                      <MdArrowUpward size={12} />
                       {torrent.seeders}
                     </span>
                     <span className="torrent-search__meta-item torrent-search__leechers">
-                      <MdArrowDownward size={14} />
+                      <MdArrowDownward size={12} />
                       {torrent.leechers}
                     </span>
                     <span className="torrent-search__meta-item torrent-search__tracker">
@@ -191,16 +191,6 @@ export function TorrentSearch({
                       </span>
                     )}
                   </div>
-
-                  {torrent.category && torrent.category.length > 0 && (
-                    <div className="torrent-search__categories">
-                      {torrent.category.map((cat, i) => (
-                        <span key={i} className="torrent-search__category-tag">
-                          {cat}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
                 
                 <Button
@@ -209,7 +199,7 @@ export function TorrentSearch({
                   disabled={addingTorrent === torrent.magnetUri}
                   className="torrent-search__add-button"
                 >
-                  <MdAddCircle size={20} />
+                  <MdAddCircle size={16} />
                   {addingTorrent === torrent.magnetUri ? 'Adding...' : 'Add'}
                 </Button>
               </div>

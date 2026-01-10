@@ -121,7 +121,7 @@ export function DownloadList({
                       onClick={() => onStopTorrent(download.gid)}
                       className="download-list__stop-button"
                     >
-                      <MdStop size={20} />
+                      <MdStop size={14} />
                       Stop
                     </Button>
                   )}

@@ -20,7 +20,7 @@ export function Torrent() {
   const [youtubeJobs, setYoutubeJobs] = useState<YouTubeJob[]>([]);
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false);
   const [inputType, setInputType] = useState<'magnet' | 'youtube' | null>(null);
-  const [activeTab, setActiveTab] = useState<'add' | 'search'>('add');
+  const [activeTab, setActiveTab] = useState<'search' | 'add'>('search');
 
   // Detect input type
   const detectInputType = (url: string): 'magnet' | 'youtube' | null => {
@@ -180,14 +180,7 @@ export function Torrent() {
           <div className="torrent__sections">
             {/* Form Section */}
             <div className="torrent__form-section">
-              <div className="torrent__tabs">
-                <button
-                  type="button"
-                  className={`torrent__tab ${activeTab === 'add' ? 'torrent__tab--active' : ''}`}
-                  onClick={() => setActiveTab('add')}
-                >
-                  Add Download
-                </button>
+              {/* <div className="torrent__tabs">
                 <button
                   type="button"
                   className={`torrent__tab ${activeTab === 'search' ? 'torrent__tab--active' : ''}`}
@@ -195,7 +188,14 @@ export function Torrent() {
                 >
                   Search Torrents
                 </button>
-              </div>
+                <button
+                  type="button"
+                  className={`torrent__tab ${activeTab === 'add' ? 'torrent__tab--active' : ''}`}
+                  onClick={() => setActiveTab('add')}
+                >
+                  Add Download
+                </button>
+              </div> */}
 
               {activeTab === 'add' ? (
                 <form className="torrent__form" onSubmit={handleSubmit}>

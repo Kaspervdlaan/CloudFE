@@ -7,11 +7,11 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  min-height: calc(100vh - var(--header-height, 64px));
+  min-height: calc(100dvh - var(--header-height, 64px));
 
   &__container {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
   }
 
   &__icon {
@@ -102,13 +102,8 @@
   }
 
   &__form {
-    background: $surface;
-    border: 1px solid $border;
-    border-radius: $radius-lg;
-    padding: $spacing-xl;
     display: flex;
     flex-direction: column;
-    gap: $spacing-lg;
     flex: 2;
   }
 
