@@ -11,7 +11,7 @@
 
   &__container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
   }
 
   &__icon {
@@ -46,13 +46,13 @@
     flex-direction: row;
     margin-bottom: $spacing-xl;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: $breakpoint-lg) {
       flex-direction: column;
     }
   }
 
   &__form-section {
-    flex: 1;
+    flex: 2;
     min-width: 0;
   }
 
@@ -339,60 +339,6 @@
 
   &__error-text {
     color: #ef4444;
-  }
-
-  @media (max-width: $breakpoint-md) {
-    padding: $spacing-md;
-
-    &__header {
-      padding: $spacing-lg;
-    }
-
-    &__icon {
-      width: 64px;
-      height: 64px;
-
-      svg {
-        width: 32px;
-        height: 32px;
-      }
-    }
-
-    &__title {
-      font-size: $font-size-2xl;
-    }
-
-    &__sections {
-      flex-direction: column;
-      gap: $spacing-lg;
-    }
-
-    &__section {
-      flex-direction: column;
-      gap: $spacing-md;
-    }
-
-    &__form {
-      padding: $spacing-lg;
-      width: 100%;
-      flex: none;
-    }
-
-    &__downloads {
-      padding: $spacing-lg;
-      width: 100%;
-      flex: none;
-      min-height: auto;
-    }
-
-    &__download-item {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    &__stop-button {
-      align-self: flex-end;
-    }
   }
 }
 

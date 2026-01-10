@@ -170,7 +170,7 @@ export function TorrentSearch({
                   <h4 className="torrent-search__result-name">{torrent.title}</h4>
                   
                   <div className="torrent-search__result-meta">
-                    <span className="torrent-search__meta-item">
+                    <span className="torrent-search__meta-item torrent-search__meta-item--size">
                       <MdStorage size={12} />
                       {torrent.sizeFormatted}
                     </span>
@@ -186,7 +186,7 @@ export function TorrentSearch({
                       {torrent.tracker}
                     </span>
                     {torrent.publishDate && (
-                      <span className="torrent-search__meta-item">
+                      <span className="torrent-search__meta-item torrent-search__meta-item--date">
                         {formatDate(torrent.publishDate)}
                       </span>
                     )}

@@ -98,15 +98,12 @@ export function DownloadList({
                     <div className="download-list__item-name">
                       {download.name || download.gid}
                     </div>
-                    <div className="download-list__item-badge download-list__item-badge--torrent">
-                      Torrent
-                    </div>
                     <div className="download-list__item-details">
                       <span>{progress}%</span>
                       <span>•</span>
                       <span>{formatSpeed(download.downloadSpeed)}</span>
-                      <span>•</span>
-                      <span>{formatBytes(download.completedLength)} / {formatBytes(download.totalLength)}</span>
+                      {/* <span>•</span>
+                      <span>{formatBytes(download.completedLength)} / {formatBytes(download.totalLength)}</span> */}
                     </div>
                     <div className="download-list__item-progress">
                       <div 
