@@ -365,6 +365,60 @@
   }
 }
 
+// Sidebar toggle button
+.ai-chat__sidebar-toggle {
+  position: fixed;
+  top: 70px;
+  left: $spacing-md;
+  z-index: 999;
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  border: 1px solid $border;
+  background: $surface;
+  color: $text-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all $transition-base $ease-in-out;
+  box-shadow: $shadow-soft;
+
+  @media (min-width: calc($breakpoint-md + 1px)) {
+    display: none;
+  }
+
+  &:hover {
+    background: $hover;
+    border-color: var(--accent-500);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+// Sidebar overlay
+.ai-chat__sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: block;
+  }
+}
+
 // Mobile responsiveness
 @media (max-width: 768px) {
   .ai-chat__container {

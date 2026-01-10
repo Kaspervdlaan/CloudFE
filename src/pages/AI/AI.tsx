@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MdPerson, MdSmartToy } from 'react-icons/md';
+import { MdPerson, MdSmartToy, MdMenu, MdClose } from 'react-icons/md';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { CodeBlock } from '../../components/common/CodeBlock/CodeBlock';
 import { AIInput } from '../../components/common/AIInput/AIInput';
@@ -281,6 +281,10 @@ export function AI() {
 
   const handleSelectConversation = (conversationId: string) => {
     setCurrentConversationId(conversationId);
+    // Close sidebar on mobile when conversation is selected
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleDeleteConversation = (conversationId: string) => {
@@ -321,6 +325,7 @@ export function AI() {
 
 
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Component to render message content with code blocks
   function MessageContent({ content }: { content: string }) {
@@ -364,13 +369,28 @@ export function AI() {
       showSidebar={false}
     >
       <div className="ai-chat">
+        {isSidebarOpen && (
+          <div 
+            className="ai-chat__sidebar-overlay"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
         <ConversationsSidebar
           conversations={conversations}
           currentConversationId={currentConversationId}
           onSelectConversation={handleSelectConversation}
           onDeleteConversation={handleDeleteConversation}
           onNewConversation={handleNewConversation}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
         />
+        <button
+          className="ai-chat__sidebar-toggle"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+        >
+          {isSidebarOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
+        </button>
         <div className="ai-chat__container">
           {messages.length === 0 ? (
             <div className="ai-chat__empty">

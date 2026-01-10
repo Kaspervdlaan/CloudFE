@@ -1,4 +1,4 @@
-import { MdDelete, MdAdd, MdMessage } from 'react-icons/md';
+import { MdDelete, MdAdd, MdMessage, MdClose } from 'react-icons/md';
 import './_ConversationsSidebar.scss';
 import type { Conversation } from '../../../types/ai';
 
@@ -8,6 +8,8 @@ interface ConversationsSidebarProps {
   onSelectConversation: (conversationId: string) => void;
   onDeleteConversation: (conversationId: string) => void;
   onNewConversation: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export function ConversationsSidebar({
@@ -16,6 +18,8 @@ export function ConversationsSidebar({
   onSelectConversation,
   onDeleteConversation,
   onNewConversation,
+  isOpen = true,
+  onClose,
 }: ConversationsSidebarProps) {
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -40,17 +44,29 @@ export function ConversationsSidebar({
   };
 
   return (
-    <div className="conversations-sidebar">
+    <div className={`conversations-sidebar ${isOpen ? 'conversations-sidebar--open' : 'conversations-sidebar--closed'}`}>
       <div className="conversations-sidebar__header">
         <h3 className="conversations-sidebar__title">Conversations</h3>
-        <button
-          className="conversations-sidebar__new-button"
-          onClick={onNewConversation}
-          title="New conversation"
-          aria-label="New conversation"
-        >
-          <MdAdd size={20} />
-        </button>
+        <div className="conversations-sidebar__header-actions">
+          <button
+            className="conversations-sidebar__new-button"
+            onClick={onNewConversation}
+            title="New conversation"
+            aria-label="New conversation"
+          >
+            <MdAdd size={20} />
+          </button>
+          {onClose && (
+            <button
+              className="conversations-sidebar__close-button"
+              onClick={onClose}
+              title="Close sidebar"
+              aria-label="Close sidebar"
+            >
+              <MdClose size={20} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="conversations-sidebar__list">
