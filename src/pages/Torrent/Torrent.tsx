@@ -176,11 +176,7 @@ export function Torrent() {
               {error}
             </div>
           )}
-
-          <div className="torrent__sections">
-            {/* Form Section */}
-            <div className="torrent__form-section">
-              {/* <div className="torrent__tabs">
+              <div className="torrent__tabs">
                 <button
                   type="button"
                   className={`torrent__tab ${activeTab === 'search' ? 'torrent__tab--active' : ''}`}
@@ -195,8 +191,11 @@ export function Torrent() {
                 >
                   Add Download
                 </button>
-              </div> */}
+              </div>
 
+          <div className="torrent__sections">
+            {/* Form Section */}
+            <div className="torrent__form-section">
               {activeTab === 'add' ? (
                 <form className="torrent__form" onSubmit={handleSubmit}>
                   <h3 className="torrent__form-title">Add Download</h3>
