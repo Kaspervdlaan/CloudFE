@@ -200,9 +200,6 @@ export function Torrent() {
                 <form className="torrent__form" onSubmit={handleSubmit}>
                   <h3 className="torrent__form-title">Add Download</h3>
                   <div className="torrent__input-group">
-                    <label htmlFor="download-url" className="torrent__label">
-                      Magnet Link or YouTube URL
-                    </label>
                     <textarea
                       id="download-url"
                       className="torrent__input"

@@ -104,6 +104,7 @@
   &__form {
     display: flex;
     flex-direction: column;
+    gap: $spacing-md;
     flex: 2;
   }
 
@@ -123,13 +124,13 @@
   &__label {
     font-size: $font-size-base;
     font-weight: $font-weight-medium;
-    color: $text-primary;
+    color: $text-secondary;
   }
 
   &__input {
     width: 100%;
     padding: $spacing-md;
-    background: $background;
+    background: $surface;
     border: 1px solid $border;
     border-radius: $radius-md;
     color: $text-primary;
