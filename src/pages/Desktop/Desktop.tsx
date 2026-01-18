@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { MdCloud, MdSmartToy, MdMovie, MdNote, MdPerson } from 'react-icons/md';
+import { MdCloud, MdSmartToy, MdMovie } from 'react-icons/md';
 import { IoMagnet } from "react-icons/io5";
 import { Layout } from '../../components/layout/Layout/Layout';
 import { AIInput } from '../../components/common/AIInput/AIInput';

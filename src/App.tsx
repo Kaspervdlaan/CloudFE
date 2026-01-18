@@ -9,7 +9,6 @@ import { Login } from './pages/Auth/Login';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { AdminRoute } from './components/auth/AdminRoute';
 // import { useEffect } from 'react';
 // import { setToken } from './services/authApi';
 
