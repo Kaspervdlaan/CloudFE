@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { MdCloud, MdSmartToy, MdMovie } from 'react-icons/md';
+import { MdCloud, MdSmartToy, MdMovie, MdAdminPanelSettings } from 'react-icons/md';
 import { IoMagnet } from "react-icons/io5";
 import { Layout } from '../../components/layout/Layout/Layout';
 import { AIInput } from '../../components/common/AIInput/AIInput';
@@ -13,7 +13,7 @@ export function Desktop() {
   const quoteToday = getQuoteOfTheDay();
 
   const isMobile = window.innerWidth < 768;
-  const apps = [
+  const baseApps = [
     {
       id: 'drive',
       name: 'Drive',
@@ -43,6 +43,17 @@ export function Desktop() {
       color: '#0000FF',
     }
   ];
+
+  // Add admin app for admin users
+  const apps = user?.role === 'admin' 
+    ? [...baseApps, {
+        id: 'admin',
+        name: 'Admin',
+        icon: MdAdminPanelSettings,
+        path: '/admin',
+        color: '#EF4444',
+      }]
+    : baseApps;
 
   const handleAppClick = (path: string) => {
     // Check if path is an external URL
@@ -82,13 +93,6 @@ export function Desktop() {
             />
           <div className="desktop__apps">
             {apps
-              // .filter((app) => {
-              //   // Only show torrent app to admin users
-              //   if (app.id === 'download' && user?.role !== 'admin') {
-              //     return false;
-              //   }
-              //   return true;
-              // })
               .map((app) => {
                 const Icon = app.icon;
                 return (

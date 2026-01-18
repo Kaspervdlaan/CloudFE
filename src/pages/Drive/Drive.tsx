@@ -4,7 +4,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Layout } from '../../components/layout/Layout/Layout';
 import { FileGrid } from '../../components/files/FileGrid/FileGrid';
 import { FileList } from '../../components/files/FileList/FileList';
-import { UserList } from '../../components/files/UserList/UserList';
 import { DropZone, useDropZone } from '../../components/files/DropZone/DropZone';
 import { PhotoPreview } from '../../components/files/PhotoPreview/PhotoPreview';
 import { VideoPreview } from '../../components/files/VideoPreview/VideoPreview';
@@ -17,15 +16,13 @@ import { CsvPreview } from '../../components/files/CsvPreview/CsvPreview';
 import { ContextMenu, ContextMenuItem } from '../../components/common/ContextMenu/ContextMenu';
 import { DeleteConfirmModal } from '../../components/common/DeleteConfirmModal/DeleteConfirmModal';
 import { ShareModal } from '../../components/common/ShareModal/ShareModal';
-import { CreateUserModal } from '../../components/common/CreateUserModal/CreateUserModal';
 import { Button } from '../../components/common/Button/Button';
-import { MdCreateNewFolder, MdUpload, MdArrowBack, MdEdit, MdDelete, MdShare, MdSettings, MdPersonAdd, MdGridOn, MdList, MdAdd, MdClose } from 'react-icons/md';
+import { MdCreateNewFolder, MdUpload, MdArrowBack, MdEdit, MdDelete, MdShare, MdSettings, MdGridOn, MdList, MdAdd, MdClose } from 'react-icons/md';
 import { Cloud } from 'lucide-react';
 import type { File } from '../../types/file';
-import type { User } from '../../types/auth';
 import { isImageFile, isVideoFile, isAudioFile, isTextFile, isPdfFile, isOfficeFile, isMarkdownFile, isCsvFile, isCodeFile } from '../../utils/fileUtils';
 import { api } from '../../utils/api';
-import { authApi, getToken } from '../../services/authApi';
+import { getToken } from '../../services/authApi';
 import { getApiUrl } from '../../config/api';
 import './_Drive.scss';
 import { useNavigate } from 'react-router-dom';
@@ -50,10 +47,6 @@ export function Drive() {
     setViewingUserId,
   } = useFilesStore();
   
-  const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [usersLoading, setUsersLoading] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<User | null>(null);
-
   const handleNavigateUp = () => {
     if (currentFolderId) {
       const currentFolder = getFileById(currentFolderId);
@@ -64,8 +57,9 @@ export function Drive() {
         navigateToFolder(undefined);
       }
     } else if (viewingUserId && user?.role === 'admin') {
-      // If viewing a user's drive, go back to user list
+      // If viewing a user's drive, go back to admin page
       setViewingUserId(undefined, null);
+      navigate('/admin');
     }
   };
 
@@ -91,7 +85,6 @@ export function Drive() {
   const [folderContextMenu, setFolderContextMenu] = useState<{ x: number; y: number } | null>(null);
   const [fileToRename, setFileToRename] = useState<string | null>(null);
   const [folderToShare, setFolderToShare] = useState<File | null>(null);
-  const [isCreateUserModalOpen, setIsCreateUserModalOpen] = useState(false);
   const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -102,51 +95,6 @@ export function Drive() {
   const handleViewModeChange = (mode: 'list' | 'grid') => {
     setViewMode(mode);
     localStorage.setItem('drive-view-mode', mode);
-  };
-
-  // Load all users if admin
-  useEffect(() => {
-    if (user?.role === 'admin') {
-      setUsersLoading(true);
-      authApi.getAllUsers()
-        .then((users) => {
-          setAllUsers(users);
-          // If viewingUserId is set, find the user and update store
-          if (viewingUserId) {
-            const foundUser = users.find(u => u.id === viewingUserId);
-            if (foundUser && viewingUser?.id !== viewingUserId) {
-              setViewingUserId(viewingUserId, foundUser);
-            }
-          }
-        })
-        .catch((err) => {
-          console.error('Failed to load users:', err);
-        })
-        .finally(() => {
-          setUsersLoading(false);
-        });
-    }
-  }, [user?.role, viewingUserId, viewingUser, setViewingUserId]);
-
-  const loadAllUsers = async () => {
-    if (user?.role === 'admin') {
-      setUsersLoading(true);
-      try {
-        const users = await authApi.getAllUsers();
-        setAllUsers(users);
-        // If viewingUserId is set, find the user and update store
-        if (viewingUserId) {
-          const foundUser = users.find(u => u.id === viewingUserId);
-          if (foundUser && viewingUser?.id !== viewingUserId) {
-            setViewingUserId(viewingUserId, foundUser);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load users:', err);
-      } finally {
-        setUsersLoading(false);
-      }
-    }
   };
 
   // Load files on mount and when folder/user changes
@@ -422,10 +370,6 @@ export function Drive() {
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
-    // Don't show context menu on user list
-    if (isAdminAtRoot) {
-      return;
-    }
     // Only show context menu if clicking on empty space (not on a file item)
     if ((e.target as HTMLElement).closest('.file-item')) {
       return;
@@ -476,35 +420,6 @@ export function Drive() {
     setDragOverFolderId(null);
   };
 
-  const handleUserClick = (selectedUser: User) => {
-    setViewingUserId(selectedUser.id, selectedUser);
-    navigateToFolder(undefined);
-  };
-
-  const handleUserDelete = (selectedUser: User) => {
-    setUserToDelete(selectedUser);
-  };
-
-  const confirmUserDelete = async () => {
-    if (userToDelete) {
-      try {
-        await authApi.deleteUser(userToDelete.id);
-        
-        // If we were viewing this user's drive, go back to user list
-        if (viewingUserId === userToDelete.id) {
-          setViewingUserId(undefined, null);
-        }
-        
-        // Remove user from list
-        setAllUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
-        setUserToDelete(null);
-      } catch (err: any) {
-        console.error('Failed to delete user:', err);
-        alert(err.message || 'Failed to delete user');
-      }
-    }
-  };
-
   const handleFolderCogClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     const buttonRect = e.currentTarget.getBoundingClientRect();
@@ -546,9 +461,6 @@ export function Drive() {
       setFolderToShare(file);
     }
   };
-
-  // Check if admin is at root level (should show user list)
-  const isAdminAtRoot = user?.role === 'admin' && currentFolderId === undefined && !viewingUserId;
   
   // Get current folder if we're inside one
   const currentFolder = currentFolderId ? getFileById(currentFolderId) : null;
@@ -582,21 +494,12 @@ export function Drive() {
       >
         <div className="drive__toolbar">
           <div className="drive__breadcrumb">
-            {isAdminAtRoot ? (
-              <button
-                className="drive__back-button"
-                onClick={() => navigate('/drive')}
-                title="Go to My Drive"
-                aria-label="Go to My Drive"
-              >
-                <Cloud size={24} />
-              </button>
-            ) : currentFolderId !== undefined || viewingUserId ? (
+            {currentFolderId !== undefined || viewingUserId ? (
               <button
                 className="drive__back-button"
                 onClick={handleNavigateUp}
-                title={viewingUserId ? "Go back to user list" : "Go up one folder"}
-                aria-label={viewingUserId ? "Go back to user list" : "Go up one folder"}
+                title={viewingUserId ? "Go back to admin" : "Go up one folder"}
+                aria-label={viewingUserId ? "Go back to admin" : "Go up one folder"}
               >
                 <MdArrowBack size={24} />
               </button>
@@ -640,11 +543,9 @@ export function Drive() {
               />
             ) : (
               <span className="drive__folder-name">
-                {isAdminAtRoot 
-                  ? 'All Users' 
-                  : viewingUser 
-                    ? `${viewingUser.name || viewingUser.email}'s Drive`
-                    : getCurrentFolderName(user?.name)
+                {viewingUser 
+                  ? `${viewingUser.name || viewingUser.email}'s Drive`
+                  : getCurrentFolderName(user?.name)
                 }
               </span>
             )}
@@ -676,18 +577,6 @@ export function Drive() {
               <MdList size={18} />
             </button>
           </div>
-          {isAdminAtRoot && (
-            <div className="drive__actions">
-              <Button
-                variant="ghost"
-                onClick={() => setIsCreateUserModalOpen(true)}
-                className="drive__create-user"
-              >
-                <MdPersonAdd size={20} />
-                <span>Create User</span>
-              </Button>
-            </div>
-          )} 
         </div>
 
         {isUploading && (
@@ -714,82 +603,59 @@ export function Drive() {
         />
 
         <div className="drive__content">
-        {isAdminAtRoot ? (
-          <>
-            {usersLoading && <div className="drive__loading">Loading users...</div>}
-            {!usersLoading && allUsers.length === 0 && (
-              <div className="drive__empty">
-                <p>No users found.</p>
-              </div>
-            )}
-            {!usersLoading && allUsers.length > 0 && (
-              <UserList 
-                users={allUsers} 
-                onUserClick={handleUserClick}
-                onUserDelete={handleUserDelete}
-                currentUserId={user?.id}
-                viewMode={viewMode}
-              />
-            )}
-          </>
-        ) : (
-          <>
-            {loading && <div className="drive__loading">Loading...</div>}
-            {error && <div className="drive__error">Error: {error}</div>}
+          {loading && <div className="drive__loading">Loading...</div>}
+          {error && <div className="drive__error">Error: {error}</div>}
 
-            {!loading && !error && (
-              <>
-                {filteredFiles.length === 0 ? (
-                  <div className="drive__empty">
-                    <p>No files here. Upload files or create a folder to get started.</p>
-                  </div>
-                ) : (
-                  <>
-                    {viewMode === 'grid' ? (
-                      <FileGrid
-                        files={filteredFiles}
-                        onFileDoubleClick={handleFileDoubleClick}
-                        onDoubleClickFileName={handleDoubleClickFileName}
-                        onFileDelete={handleFileDelete}
-                        onFileDownload={handleFileDownload}
-                        onFileShare={handleFileShare}
-                        onFileDrop={handleFileDrop}
-                        onDropFiles={handleDropFiles}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDropComplete={resetDragging}
-                        dragOverFolderId={dragOverFolderId}
-                        fileToRename={fileToRename}
-                        currentFolderId={currentFolderId}
-                      />
-                    ) : (
-                      <FileList
-                        files={filteredFiles}
-                        onFileDoubleClick={handleFileDoubleClick}
-                        onDoubleClickFileName={handleDoubleClickFileName}
-                        onFileDelete={handleFileDelete}
-                        onFileDownload={handleFileDownload}
-                        onFileShare={handleFileShare}
-                        onFileDrop={handleFileDrop}
-                        onDropFiles={handleDropFiles}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDropComplete={resetDragging}
-                        dragOverFolderId={dragOverFolderId}
-                        fileToRename={fileToRename}
-                        currentFolderId={currentFolderId}
-                      />
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </>
-        )}
+          {!loading && !error && (
+            <>
+              {filteredFiles.length === 0 ? (
+                <div className="drive__empty">
+                  <p>No files here. Upload files or create a folder to get started.</p>
+                </div>
+              ) : (
+                <>
+                  {viewMode === 'grid' ? (
+                    <FileGrid
+                      files={filteredFiles}
+                      onFileDoubleClick={handleFileDoubleClick}
+                      onDoubleClickFileName={handleDoubleClickFileName}
+                      onFileDelete={handleFileDelete}
+                      onFileDownload={handleFileDownload}
+                      onFileShare={handleFileShare}
+                      onFileDrop={handleFileDrop}
+                      onDropFiles={handleDropFiles}
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDropComplete={resetDragging}
+                      dragOverFolderId={dragOverFolderId}
+                      fileToRename={fileToRename}
+                      currentFolderId={currentFolderId}
+                    />
+                  ) : (
+                    <FileList
+                      files={filteredFiles}
+                      onFileDoubleClick={handleFileDoubleClick}
+                      onDoubleClickFileName={handleDoubleClickFileName}
+                      onFileDelete={handleFileDelete}
+                      onFileDownload={handleFileDownload}
+                      onFileShare={handleFileShare}
+                      onFileDrop={handleFileDrop}
+                      onDropFiles={handleDropFiles}
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDropComplete={resetDragging}
+                      dragOverFolderId={dragOverFolderId}
+                      fileToRename={fileToRename}
+                      currentFolderId={currentFolderId}
+                    />
+                  )}
+                </>
+              )}
+            </>
+          )}
         </div>
-        {/* Floating Action Button - only show when not admin at root */}
-        {!isAdminAtRoot && (
-          <div className="drive__fab" ref={fabMenuRef}>
+        {/* Floating Action Button */}
+        <div className="drive__fab" ref={fabMenuRef}>
             {isFabMenuOpen && (
               <div className="drive__fab-menu">
                 <label className="drive__fab-menu-item" style={{ cursor: 'pointer' }}>
@@ -832,7 +698,6 @@ export function Drive() {
               {isFabMenuOpen ? <MdClose size={24} /> : <MdAdd size={24} />}
             </button>
           </div>
-        )}
       </div>
     );
   }
@@ -853,8 +718,6 @@ export function Drive() {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       dragOverFolderId={dragOverFolderId}
-      users={user?.role === 'admin' ? allUsers : undefined}
-      onUserClick={handleUserClick}
       showViewToggle={false}
     >
       <DropZone>
@@ -973,13 +836,6 @@ export function Drive() {
         onClose={() => setFileToDelete(null)}
         onConfirm={confirmDelete}
       />
-      <DeleteConfirmModal
-        isOpen={userToDelete !== null}
-        fileName={userToDelete?.name || userToDelete?.email || ''}
-        fileType="user"
-        onClose={() => setUserToDelete(null)}
-        onConfirm={confirmUserDelete}
-      />
       {folderToShare && (
         <ShareModal
           isOpen={folderToShare !== null}
@@ -992,13 +848,6 @@ export function Drive() {
               loadFiles(currentFolderId);
             }
           }}
-        />
-      )}
-      {user?.role === 'admin' && (
-        <CreateUserModal
-          isOpen={isCreateUserModalOpen}
-          onClose={() => setIsCreateUserModalOpen(false)}
-          onUserCreated={loadAllUsers}
         />
       )}
     </Layout>

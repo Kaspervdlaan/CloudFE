@@ -90,6 +90,11 @@
         color: var(--accent-500);
       }
     }
+
+    @media (max-width: $breakpoint-md) {
+      padding: $spacing-sm $spacing-md;
+      font-size: $font-size-sm;
+    }
   }
 
   &__search-component {

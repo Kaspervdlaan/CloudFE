@@ -63,7 +63,7 @@
 
   &__apps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
     width: 100%;
     gap: $spacing-sm;
 
@@ -96,9 +96,6 @@
     &:hover {
       transform: translateY(-4px);
 
-      .desktop__app-icon {
-        transform: scale(1.1);
-      }
     }
 
     &:active {
@@ -124,7 +121,7 @@
   &__app-name {
     font-size: $font-size-base;
     font-weight: $font-weight-medium;
-    color: $text-primary;
+    color: $text-secondary;
     position: relative;
     z-index: 1;
     text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);

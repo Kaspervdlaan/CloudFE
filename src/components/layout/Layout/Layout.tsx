@@ -1,7 +1,6 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { Header } from '../Header/Header';
 import { Sidebar } from '../Sidebar/Sidebar';
-import type { User } from '../../../types/auth';
 import './_Layout.scss';
 
 interface LayoutProps {
@@ -14,8 +13,6 @@ interface LayoutProps {
   onDragOver?: (folderId: string | undefined) => void;
   onDragLeave?: () => void;
   dragOverFolderId?: string | null;
-  users?: User[];
-  onUserClick?: (user: User) => void;
   showSearch?: boolean;
   showViewToggle?: boolean;
   showSidebar?: boolean;
@@ -31,8 +28,6 @@ export function Layout({
   onDragOver,
   onDragLeave,
   dragOverFolderId,
-  users,
-  onUserClick,
   showSearch = true,
   showViewToggle = true,
   showSidebar = true,
@@ -90,8 +85,6 @@ export function Layout({
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             dragOverFolderId={dragOverFolderId}
-            users={users}
-            onUserClick={onUserClick}
           />
         )}
         <main className={`layout__main ${!showSidebar ? 'layout__main--no-sidebar' : ''}`}>{children}</main>
