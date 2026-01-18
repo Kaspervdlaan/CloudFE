@@ -41,20 +41,6 @@ export function Desktop() {
       icon: IoMagnet,
       path: '/torrent',
       color: '#0000FF',
-    },
-    {
-      id: 'blog',
-      name: 'Blog',
-      icon: MdNote,
-      path: 'https://helpful-frangollo-dde9c8.netlify.app/',
-      color: '#8B5CF6',
-    },
-    {
-      id: 'profile',
-      name: 'Profile',
-      icon: MdPerson,
-      path: '/profile',
-      color: '#808080',
     }
   ];
 
@@ -96,13 +82,13 @@ export function Desktop() {
             />
           <div className="desktop__apps">
             {apps
-              .filter((app) => {
-                // Only show torrent app to admin users
-                if (app.id === 'download' && user?.role !== 'admin') {
-                  return false;
-                }
-                return true;
-              })
+              // .filter((app) => {
+              //   // Only show torrent app to admin users
+              //   if (app.id === 'download' && user?.role !== 'admin') {
+              //     return false;
+              //   }
+              //   return true;
+              // })
               .map((app) => {
                 const Icon = app.icon;
                 return (

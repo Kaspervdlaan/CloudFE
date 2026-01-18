@@ -75,9 +75,9 @@ function AppRoutes() {
       <Route
         path="/torrent"
         element={
-          <AdminRoute>
+          <ProtectedRoute>
             <Torrent />
-          </AdminRoute>
+          </ProtectedRoute>
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
