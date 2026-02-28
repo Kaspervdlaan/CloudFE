@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 // import { authApi } from '../../services/authApi';
-import { MdEmail, MdLock, MdLogin } from 'react-icons/md';
+import { MdEmail, MdLock, MdLogin, MdDownload } from 'react-icons/md';
 import './_Login.scss';
 
 export function Login() {
@@ -10,8 +10,18 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
   // const [searchParams] = useSearchParams();
 
   // Check for OAuth callback token
@@ -43,6 +53,13 @@ export function Login() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') setInstallPrompt(null);
   };
 
   // const handleGoogleAuth = () => {
@@ -96,6 +113,17 @@ export function Login() {
             <MdLogin size={20} />
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
+
+          {installPrompt && (
+            <button
+              type="button"
+              className="auth-button auth-button--install"
+              onClick={handleInstall}
+            >
+              <MdDownload size={20} />
+              Install App
+            </button>
+          )}
         </form>
 
         {/* <div className="auth-divider">

@@ -109,6 +109,15 @@
     @include button-primary;
   }
 
+  &--install {
+    @include button-secondary;
+    border: 1px solid $border;
+
+    &:hover:not(:disabled) {
+      background-color: $hover;
+    }
+  }
+
   &--google {
     @include button-secondary;
     background-color: $surface;
