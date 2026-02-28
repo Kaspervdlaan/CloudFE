@@ -264,6 +264,22 @@
   }
 
   @media (max-width: $breakpoint-md) {
+    &__result-item {
+      align-items: flex-start;
+    }
+
+    &__result-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacing-xs;
+    }
+
+    &__result-name {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+    }
+
     &__result-meta {
       // Hide all meta items except size on mobile
       .torrent-search__seeders,

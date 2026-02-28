@@ -86,11 +86,11 @@ export function Desktop() {
               {quoteToday?.quote} - <i>{quoteToday?.author}</i>
             </p>
           </div>
-            <AIInput
-              onSubmit={handleMarkovSubmit}
-              placeholder="Ask Markov..."
-              showFooter={false}
-            />
+          <AIInput
+            onSubmit={handleMarkovSubmit}
+            placeholder="Ask Markov..."
+            showFooter={false}
+          />
           <div className="desktop__apps">
             {apps
               .map((app) => {

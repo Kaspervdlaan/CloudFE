@@ -20,20 +20,18 @@
   }
 
   &__container {
-    width: 100%;
-    max-width: fit-content;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: $spacing-2xl;
     padding-bottom: $spacing-md;
+    height: 80%;
 
     @media (max-width: $breakpoint-md) {
       gap: $spacing-lg;
       padding-top: $spacing-lg;
       height: 100%;
-      max-width: 80dvw;
     }
 
     @media (max-width: $breakpoint-sm) {
@@ -53,7 +51,6 @@
     }
 
     &-subtitle {
-
       @media (max-width: $breakpoint-md) {
         font-size: $font-size-sm;
         padding: 0 $spacing-sm;
@@ -63,9 +60,7 @@
 
   &__apps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    width: 100%;
-    gap: $spacing-sm;
+    grid-template-columns: repeat(4, minmax(80px, 1fr));
 
     @media (max-width: $breakpoint-md) {
       grid-template-columns: repeat(4, 1fr);
@@ -119,16 +114,11 @@
   }
 
   &__app-name {
-    font-size: $font-size-base;
-    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
     color: $text-secondary;
     position: relative;
     z-index: 1;
     text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
-
-    @media (max-width: $breakpoint-md) {
-      font-size: $font-size-sm;
-    }
   }
 }
 
