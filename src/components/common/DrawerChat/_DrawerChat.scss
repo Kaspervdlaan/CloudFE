@@ -1,0 +1,31 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.drawer-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  &__empty {
+    padding: 2rem 1rem;
+
+    .ai-chat__empty-title {
+      font-size: $font-size-lg;
+    }
+  }
+
+  &__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-sm;
+    gap: $spacing-md;
+  }
+
+  &__input {
+    padding: $spacing-sm $spacing-sm $spacing-xs;
+    border-top: 1px solid $border;
+    flex-shrink: 0;
+  }
+}

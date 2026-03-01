@@ -1,5 +1,5 @@
 import { Button } from '../../common/Button/Button';
-import { MdStop, MdRefresh } from 'react-icons/md';
+import { MdStop } from 'react-icons/md';
 import './_DownloadList.scss';
 import type { TorrentDownload } from '../../../types/torrent';
 import type { YouTubeJob } from '../../../types/youtube';
@@ -9,7 +9,6 @@ interface DownloadListProps {
   youtubeJobs: YouTubeJob[];
   isLoadingTorrents?: boolean;
   isLoadingYouTube?: boolean;
-  onRefresh?: () => void;
   onStopTorrent?: (gid: string) => void;
 }
 
@@ -22,7 +21,6 @@ export function DownloadList({
   youtubeJobs,
   isLoadingTorrents = false,
   isLoadingYouTube = false,
-  onRefresh,
   onStopTorrent,
 }: DownloadListProps) {
   const formatBytes = (bytes?: number): string => {
@@ -66,27 +64,18 @@ export function DownloadList({
 
   return (
     <div className="download-list">
-      <div className="download-list__header">
-        <h2 className="download-list__title">Active Downloads</h2>
-        {onRefresh && (
-          <Button
-            variant="ghost"
-            onClick={onRefresh}
-            disabled={isLoading}
-            className="download-list__refresh-button"
-          >
-            <MdRefresh size={20} />
-            Refresh
-          </Button>
-        )}
-      </div>
-
       {isLoading && !hasDownloads ? (
         <div className="download-list__loading">Loading downloads...</div>
       ) : !hasDownloads ? (
         <div className="download-list__empty">No active downloads</div>
       ) : (
-        <div className="download-list__items">
+        <>
+          <div className="download-list__header">
+            <span className="download-list__count">
+              {unifiedDownloads.length} active download{unifiedDownloads.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="download-list__items">
           {unifiedDownloads.map((item) => {
             if (item.type === 'torrent') {
               const download = item.data;
@@ -166,7 +155,8 @@ export function DownloadList({
               );
             }
           })}
-        </div>
+          </div>
+        </>
       )}
     </div>
   );

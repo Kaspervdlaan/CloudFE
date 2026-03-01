@@ -3,64 +3,34 @@
 
 .desktop {
   width: 100%;
-  height: 100%;
-  min-height: calc(100dvh - var(--header-height, 64px));
+  height: calc(100dvh - var(--header-height, 64px));
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: $spacing-md;
   background: $background;
-  position: relative;
   overflow: hidden;
 
-  @media (max-width: $breakpoint-md) {
-    padding: $spacing-sm;
-    align-items: flex-start;
-    min-height: unset;
-  }
-
-  &__container {
+  // Left main content area
+  &__main {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: $spacing-2xl;
-    padding-bottom: $spacing-md;
-    height: 80%;
+    padding: $spacing-lg;
+    overflow-y: auto;
+    min-width: 0;
+  }
 
-    @media (max-width: $breakpoint-md) {
-      gap: $spacing-lg;
-      padding-top: $spacing-lg;
-      height: 100%;
-    }
-
-    @media (max-width: $breakpoint-sm) {
-      max-width: 95dvw;
-    }
-
-    &-header {
-      flex: 1;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: $spacing-sm;
-      text-align: center;
-      text-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-    }
-
-    &-subtitle {
-      @media (max-width: $breakpoint-md) {
-        font-size: $font-size-sm;
-        padding: 0 $spacing-sm;
-      }
-    }
+  &__downloads {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    flex: 1;
+    padding-bottom: $spacing-xl;
+    border-bottom: 1px solid $border;
   }
 
   &__apps {
     display: grid;
-    grid-template-columns: repeat(4, minmax(80px, 1fr));
+    grid-template-columns: repeat(5, minmax(80px, 1fr));
+    padding-top: $spacing-md;
 
     @media (max-width: $breakpoint-md) {
       grid-template-columns: repeat(4, 1fr);
@@ -90,7 +60,6 @@
 
     &:hover {
       transform: translateY(-4px);
-
     }
 
     &:active {
@@ -119,6 +88,89 @@
     position: relative;
     z-index: 1;
     text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+  }
+
+  // Right AI drawer
+  &__drawer {
+    position: relative;
+    width: 48px;
+    min-height: 100%;
+    border-left: 1px solid $border;
+    background: $surface;
+    transition: width 0.3s $ease-in-out;
+    display: flex;
+    flex-shrink: 0;
+
+    &--open {
+      // width is set via inline style when open
+    }
+
+    @media (max-width: $breakpoint-md) {
+      display: none;
+    }
+  }
+
+
+  &__drawer-toggle {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: $surface;
+    border: 1px solid $border;
+    color: $text-secondary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: color $transition-base $ease-in-out, background $transition-base $ease-in-out;
+
+    &:hover {
+      color: $text-primary;
+      background: $hover;
+    }
+  }
+
+  &__drawer-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-lg $spacing-lg $spacing-sm;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.2s $ease-in-out;
+
+    .desktop__drawer--open & {
+      opacity: 1;
+    }
+  }
+
+  &__drawer-header {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    flex-shrink: 0;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid $border;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__drawer-title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  &__drawer-subtitle {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin: 0;
+    line-height: 1.5;
   }
 }
 

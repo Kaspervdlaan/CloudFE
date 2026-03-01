@@ -10,11 +10,13 @@
   &__form {
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: stretch;
     gap: $spacing-md;
   }
 
   &__input-wrapper {
+    flex: 1;
     display: flex;
     align-items: center;
     gap: $spacing-md;
@@ -89,6 +91,29 @@
   &__search-button {
     flex-shrink: 0;
     white-space: nowrap;
+    align-self: stretch;
+  }
+
+  &__format-selector {
+    display: flex;
+    gap: $spacing-lg;
+  }
+
+  &__format-label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $font-size-sm;
+    color: $text-primary;
+    cursor: pointer;
+
+    input[type="radio"] {
+      cursor: pointer;
+    }
+
+    &:hover {
+      color: var(--accent-500);
+    }
   }
 
   &__error {

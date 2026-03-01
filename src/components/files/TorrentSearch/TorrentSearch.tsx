@@ -1,45 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MdSearch, MdAddCircle, MdStorage, MdArrowUpward, MdArrowDownward } from 'react-icons/md';
 import { api } from '../../../utils/api';
 import { Button } from '../../common/Button/Button';
-import type { TorrentSearchResult, TorrentCategory } from '../../../types/torrent';
+import type { TorrentSearchResult } from '../../../types/torrent';
 import './_TorrentSearch.scss';
 
+type InputType = 'magnet' | 'youtube' | 'search';
+
 interface TorrentSearchProps {
-  onSelectTorrent?: (magnetUri: string) => void;
   onAddTorrent?: (magnetUri: string) => Promise<void>;
+  onDownloadYouTube?: (url: string, format: 'mp3' | 'mp4') => Promise<void>;
   className?: string;
 }
 
-const CATEGORIES: { value: TorrentCategory | ''; label: string }[] = [
-  { value: '', label: 'All Categories' },
-  { value: 'movies', label: 'Movies' },
-  { value: 'movies_hd', label: 'Movies HD' },
-  { value: 'movies_4k', label: 'Movies 4K' },
-  { value: 'tv', label: 'TV Shows' },
-  { value: 'tv_hd', label: 'TV Shows HD' },
-  { value: 'music', label: 'Music' },
-  { value: 'games', label: 'Games' },
-  { value: 'software', label: 'Software' },
-  { value: 'books', label: 'Books' },
-  { value: 'anime', label: 'Anime' },
-];
+const detectInputType = (value: string): InputType => {
+  const trimmed = value.trim();
+  if (trimmed.startsWith('magnet:?')) return 'magnet';
+  if (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/.test(trimmed)) return 'youtube';
+  return 'search';
+};
 
 export function TorrentSearch({ 
-  onSelectTorrent, 
   onAddTorrent,
+  onDownloadYouTube,
   className = '' 
 }: TorrentSearchProps) {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<TorrentCategory | ''>('');
+  const [inputType, setInputType] = useState<InputType>('search');
+  const [youtubeFormat, setYoutubeFormat] = useState<'mp3' | 'mp4'>('mp4');
   const [results, setResults] = useState<TorrentSearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resultCount, setResultCount] = useState(0);
   const [addingTorrent, setAddingTorrent] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const searchTorrents = async (searchQuery: string, searchCategory?: string) => {
+  useEffect(() => {
+    setInputType(detectInputType(query));
+  }, [query]);
+
+  const searchTorrents = async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults([]);
       setError(null);
@@ -47,14 +47,14 @@ export function TorrentSearch({
       return;
     }
 
-    setIsSearching(true);
+    setIsSubmitting(true);
     setError(null);
     setHasSearched(true);
 
     try {
       const response = await api.searchTorrents(
         searchQuery, 
-        searchCategory || undefined, 
+        undefined, 
         50
       );
       const data = response.data;
@@ -66,13 +66,40 @@ export function TorrentSearch({
       setError(err.message || 'Failed to search torrents. Please try again.');
       setResults([]);
     } finally {
-      setIsSearching(false);
+      setIsSubmitting(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await searchTorrents(query, category);
+    const trimmed = query.trim();
+    if (!trimmed) return;
+
+    if (inputType === 'magnet') {
+      setIsSubmitting(true);
+      setError(null);
+      try {
+        if (onAddTorrent) await onAddTorrent(trimmed);
+        setQuery('');
+      } catch (err: any) {
+        setError(err.message || 'Failed to add torrent.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else if (inputType === 'youtube') {
+      setIsSubmitting(true);
+      setError(null);
+      try {
+        if (onDownloadYouTube) await onDownloadYouTube(trimmed, youtubeFormat);
+        setQuery('');
+      } catch (err: any) {
+        setError(err.message || 'Failed to download from YouTube.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      await searchTorrents(trimmed);
+    }
   };
 
   const handleAddTorrent = async (magnetUri: string) => {
@@ -82,10 +109,7 @@ export function TorrentSearch({
     try {
       if (onAddTorrent) {
         await onAddTorrent(magnetUri);
-      } else if (onSelectTorrent) {
-        onSelectTorrent(magnetUri);
       } else {
-        // Fallback: call API directly
         await api.addTorrent(magnetUri);
       }
     } catch (err: any) {
@@ -109,6 +133,14 @@ export function TorrentSearch({
     }
   };
 
+  const buttonLabel = isSubmitting
+    ? 'Submitting...'
+    : inputType === 'magnet'
+      ? 'Add Torrent'
+      : inputType === 'youtube'
+        ? 'Download'
+        : 'Search';
+
   return (
     <div className={`torrent-search ${className}`}>
       <form className="torrent-search__form" onSubmit={handleSubmit}>
@@ -119,35 +151,47 @@ export function TorrentSearch({
             className="torrent-search__input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for torrents..."
-            disabled={isSearching}
+            placeholder="Search torrents, paste magnet link, or YouTube URL..."
+            disabled={isSubmitting}
           />
         </div>
         
         <div className="torrent-search__controls">
-          <select
-            className="torrent-search__category-select"
-            value={category}
-            onChange={(e) => setCategory(e.target.value as TorrentCategory | '')}
-            disabled={isSearching}
-          >
-            {CATEGORIES.map(cat => (
-              <option key={cat.value} value={cat.value}>
-                {cat.label}
-              </option>
-            ))}
-          </select>
-          
           <Button
             type="submit"
             variant="primary"
-            disabled={!query.trim() || isSearching}
+            disabled={!query.trim() || isSubmitting}
             className="torrent-search__search-button"
           >
-            {isSearching ? 'Searching...' : 'Search'}
+            {buttonLabel}
           </Button>
         </div>
       </form>
+
+      {inputType === 'youtube' && (
+        <div className="torrent-search__format-selector">
+          <label className="torrent-search__format-label">
+            <input
+              type="radio"
+              value="mp4"
+              checked={youtubeFormat === 'mp4'}
+              onChange={(e) => setYoutubeFormat(e.target.value as 'mp4')}
+              disabled={isSubmitting}
+            />
+            <span>MP4 (Video)</span>
+          </label>
+          <label className="torrent-search__format-label">
+            <input
+              type="radio"
+              value="mp3"
+              checked={youtubeFormat === 'mp3'}
+              onChange={(e) => setYoutubeFormat(e.target.value as 'mp3')}
+              disabled={isSubmitting}
+            />
+            <span>MP3 (Audio)</span>
+          </label>
+        </div>
+      )}
 
       {error && (
         <div className="torrent-search__error">
@@ -208,7 +252,7 @@ export function TorrentSearch({
         </div>
       )}
 
-      {!isSearching && hasSearched && results.length === 0 && !error && (
+      {!isSubmitting && hasSearched && results.length === 0 && !error && (
         <div className="torrent-search__empty">
           No results found for "{query}"
         </div>

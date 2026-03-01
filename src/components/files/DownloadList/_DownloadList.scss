@@ -6,9 +6,15 @@
 
   &__header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    padding: $spacing-sm 0;
     margin-bottom: $spacing-md;
+  }
+
+  &__count {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    font-weight: $font-weight-medium;
   }
 
   &__title {

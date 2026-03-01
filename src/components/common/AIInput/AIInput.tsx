@@ -11,6 +11,8 @@ interface AIInputProps {
   className?: string;
   showFooter?: boolean;
   autoFocus?: boolean;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 export function AIInput({
@@ -22,6 +24,8 @@ export function AIInput({
   className = '',
   showFooter = true,
   autoFocus = false,
+  onFocus,
+  onBlur,
 }: AIInputProps) {
   const [input, setInput] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -67,6 +71,8 @@ export function AIInput({
           autoFocus={autoFocus}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
+          onFocus={onFocus}
+          onBlur={onBlur}
           placeholder={placeholder}
           rows={1}
           disabled={isLoading || disabled}
